@@ -9,7 +9,6 @@
 功能说明: md & mdx 源文件格式化
 后续优化: 
     1. 多线程并行.
-    2. 封装 GUI.
 """
 
 import os
@@ -17,7 +16,6 @@ import re
 import time
 from pathlib import Path
 from hashlib import sha1
-
 
 class Formatter:
     """md & mdx 源文件格式化 文件格式化"""
@@ -36,10 +34,12 @@ class Formatter:
             raise FormatterError(f"{temp_dir} 目录不存在")
 
         # 获取 md 和 mdx 文件列表
+        node_modules_dir = os.path.normpath(os.path.join(root_dir,"node_modules"))
         md_file_list: list[str] = []
-        for root, _, files in os.walk(root_dir):
+        for root, _, files in os.walk(root_dir):  
             for file in files:
-                if file.endswith(".md") or file.endswith(".mdx"):
+                file_path = os.path.normpath(os.path.join(root, file))
+                if (file_path.endswith(".md") or file_path.endswith(".mdx")) and file_path.startswith(node_modules_dir) is False:
                     md_file_list.append(os.path.join(root, file))
 
         self.temp_dir: str = temp_dir
@@ -65,15 +65,14 @@ class Formatter:
 
     def run(self):
         """运行格式化"""
-        # 删除冗余文件,同时也修正 self.img_file_list             
+        # 删除冗余文件,同时也修正 self.img_file_list
         self.del_img()
-
         # 按照哈希号重命名附件文件
         self.rename_img_file()
 
-        
-        for md_file in self.md_file_list:
+        for md_file in self.md_file_list:            
             os.system(f'{os.path.dirname(os.path.abspath(__file__))}/mdfmt/mdfmt -w "{md_file}"')
+
 
     def get_ref_img_file_list(self) -> list[str]:
         """返回所有引用的附件列表"""
