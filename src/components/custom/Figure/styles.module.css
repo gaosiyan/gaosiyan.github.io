@@ -1,11 +1,11 @@
-/* 与Table组件保持一致的风格 */
+/* 基础样式保持不变 */
 .figureContainer {
   margin: 1rem auto;
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  scroll-margin-top: 100px; /* 避免被导航栏遮挡 */
+  scroll-margin-top: 100px;
 }
 
 .image {
@@ -15,11 +15,40 @@
   padding: 4px;
 }
 
+/* 标题容器核心样式调整 */
 .title {
   text-align: center;
   margin-top: 0.5rem;
   font-size: 0.9em;
   color: #333;
+  line-height: 2; /* 增加行高避免公式与文字重叠 */
+  width: 100%; /* 限制标题宽度与图片一致 */
+  overflow-wrap: break-word; /* 允许长文本换行，但不拆分公式 */
+}
+
+/* 强制KaTeX所有元素在行内流动 */
+.title .katex-display {
+  display: inline !important; /* 覆盖块级显示 */
+  margin: 0 !important; /* 清除默认块级边距 */
+  padding: 0 0.2em; /* 仅保留左右间距 */
+}
+
+/* 处理KaTeX内部嵌套结构 */
+.title .katex-display > .katex {
+  display: inline-block !important;
+  vertical-align: baseline; /* 与文字基线对齐 */
+  white-space: nowrap; /* 公式内部不换行 */
+}
+
+/* 覆盖可能的块级容器 */
+.title .katex-display > .katex > .katex-html {
+  display: inline !important;
+}
+
+/* 确保标题内所有子元素不强制换行 */
+.title * {
+  display: inline;
+  vertical-align: baseline;
 }
 
 .figureRef {
