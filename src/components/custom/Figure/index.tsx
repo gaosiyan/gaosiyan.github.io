@@ -2,12 +2,17 @@ import React from "react";
 import styles from "./styles.module.css";
 import { FigureProps, FigureRefProps } from "./types";
 
-// 编号管理（与Table组件逻辑一致）
+// 全局变量用于跟踪图片编号
 const figureMap: Record<string, number> = {};
 let counter = 0;
 
-export const Figure: React.FC<FigureProps> = ({ id, src, title }) => {
-  // 自动分配唯一编号
+export const Figure: React.FC<FigureProps> = ({ 
+  id, 
+  src, 
+  title, 
+  width = "80%"  // 设置默认宽度为80%
+}) => {
+  // 为新图片分配编号
   if (!figureMap[id]) {
     counter++;
     figureMap[id] = counter;
@@ -15,13 +20,17 @@ export const Figure: React.FC<FigureProps> = ({ id, src, title }) => {
   const figureNumber = figureMap[id];
 
   return (
-    <div className={styles.figureContainer} id={`fig-${id}`}>
+    <div 
+      className={styles.figureContainer} 
+      id={`fig-${id}`}
+      style={{ width }}  // 应用宽度配置
+    >
       <img
         src={src}
-        alt={title} // 用title作为替代文本，确保无障碍支持
+        alt={title}
         className={styles.image}
       />
-      <div className={styles.caption}>
+      <div className={styles.title}>
         图{figureNumber}: {title}
       </div>
     </div>
@@ -32,7 +41,7 @@ export const FigureRef: React.FC<FigureRefProps> = ({ id }) => {
   const figureNumber = figureMap[id];
 
   return figureNumber ? (
-    <a href={`#fig-${id}`} className={styles.figRef}>
+    <a href={`#fig-${id}`} className={styles.figureRef}>
       图{figureNumber}
     </a>
   ) : null;

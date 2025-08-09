@@ -15,19 +15,19 @@
   padding: 4px;
 }
 
-.caption {
+.title {
   text-align: center;
   margin-top: 0.5rem;
   font-size: 0.9em;
   color: #333;
 }
 
-.figRef {
+.figureRef {
   color: var(--ifm-link-color);
   text-decoration: var(--ifm-link-decoration);
 }
 
-.figRef:hover {
+.figureRef:hover {
   color: var(--ifm-link-hover-color);
   text-decoration: var(--ifm-link-hover-decoration);
 }
