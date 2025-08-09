@@ -24,12 +24,12 @@ Fortunately, the powerful structured Markdown engine [lute](https://github.com/8
 
 ## ✨ Features
 
-* **Support multiple inputs**: standard input, file, directory and wildcard. The specified directory will recursively format all markdown files under the directory
-* **Support Rewriting**: write the results to (source) files instead of standard output
-* **Support display difference**: display the difference before and after markdown formatting, Instead of rewriting files
-* **Support listing formatted files**
-* **Cross platform**: Linux, windows, Mac
-* **One-click installation**: support one-click installation `mdfmt` through `Homebrew`, `go install`, etc.
+- **Support multiple inputs**: standard input, file, directory and wildcard. The specified directory will recursively format all markdown files under the directory
+- **Support Rewriting**: write the results to (source) files instead of standard output
+- **Support display difference**: display the difference before and after markdown formatting, Instead of rewriting files
+- **Support listing formatted files**
+- **Cross platform**: Linux, windows, Mac
+- **One-click installation**: support one-click installation `mdfmt` through `Homebrew`, `go install`, etc.
 
 ## 🛠️ Installation
 
@@ -53,7 +53,7 @@ Starting with Go 1.17, you can install `mdfmt` from source using go install:
 go install github.com/elliotxx/mdfmt/cmd/mdfmt@latest
 ```
 
-*NOTE*: This will install `mdfmt` based on the latest available code base. Even though the goal is that the latest commit on the main branch should always be a stable and usable version, this is not the recommended way to install and use `mdfmt`. The version output will show `mdfmt` version (default-version) for go install based builds.
+_NOTE_: This will install `mdfmt` based on the latest available code base. Even though the goal is that the latest commit on the main branch should always be a stable and usable version, this is not the recommended way to install and use `mdfmt`. The version output will show `mdfmt` version (default-version) for go install based builds.
 
 ### Docker
 
@@ -99,31 +99,31 @@ Usage:
 Examples:
   # Format specified Markdown file, and write to stdout
   mdfmt README.md
-  
+
   # Format and rewrite for specified Markdown file
   mdfmt -w README.md
-  
+
   # Display diffs instead of rewriting Markdown files
   mdfmt -d README.md
-  
+
   # List files whose formatting differs from mdfmt's
   mdfmt -l .
-  
+
   # Format, rewrite, and display diffs for specified Markdown file
   mdfmt -d -w README.md
-  
+
   # Format and rewrite all Markdown file in current directory
   mdfmt -w *.md
-  
+
   # Recursive format and rewrite all Markdown file in current directory
   mdfmt -w .
-  
+
   # Format and rewrite the specified Markdown file and directory
   mdfmt -w README.md testdir/
-  
+
   # Format stdin to stdout
   cat README.md | mdfmt
-  
+
   # Show version info
   mdfmt -V
 
@@ -137,6 +137,6 @@ Flags:
 
 ## 🙏 Thanks
 
-* The Markdown engine uses [lute](https://github.com/88250/lute), cool!
-* The CLI Template uses [elliotxx/go-cli-prototype](https://github.com/elliotxx/go-cli-prototype)
-* The specification follows [GFM](https://github.github.com/gfm/)/[CommonMark](https://commonmark.org/)
+- The Markdown engine uses [lute](https://github.com/88250/lute), cool!
+- The CLI Template uses [elliotxx/go-cli-prototype](https://github.com/elliotxx/go-cli-prototype)
+- The specification follows [GFM](https://github.github.com/gfm/)/[CommonMark](https://commonmark.org/)

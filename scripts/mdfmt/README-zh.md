@@ -24,12 +24,12 @@
 
 ## ✨ 特性
 
-* 支持多种输入:标准输入,文件,目录,通配符,其中指定目录会递归格式化目录下所有 Markdown 文件
-* 支持重写:将结果写入(源)文件而不是标准输出
-* 支持显示差异:显示 Markdown 格式化前后的差异(diff),而不是重写文件
-* 支持列出格式化的文件
-* 跨平台:Linux, Windows, Mac
-* 一键安装:支持通过 `Homebrew`,`go install` 等方式一键安装 `mdfmt`
+- 支持多种输入:标准输入,文件,目录,通配符,其中指定目录会递归格式化目录下所有 Markdown 文件
+- 支持重写:将结果写入(源)文件而不是标准输出
+- 支持显示差异:显示 Markdown 格式化前后的差异(diff),而不是重写文件
+- 支持列出格式化的文件
+- 跨平台:Linux, Windows, Mac
+- 一键安装:支持通过 `Homebrew`,`go install` 等方式一键安装 `mdfmt`
 
 ## 🛠️ 安装
 
@@ -53,7 +53,7 @@ brew install elliotxx/tap/mdfmt
 go install github.com/elliotxx/mdfmt/cmd/mdfmt@latest
 ```
 
-*注意*: 你将基于代码仓库最新的可用版本安装 `mdfmt`,尽管主分支的最新提交应该始终是一个稳定和可用的版本,但这不是安装和使用 `mdfmt` 的推荐方式.通过 `go install` 安装的 `mdfmt` 版本输出将显示默认版本号(default-version).
+_注意_: 你将基于代码仓库最新的可用版本安装 `mdfmt`,尽管主分支的最新提交应该始终是一个稳定和可用的版本,但这不是安装和使用 `mdfmt` 的推荐方式.通过 `go install` 安装的 `mdfmt` 版本输出将显示默认版本号(default-version).
 
 ### Docker
 
@@ -99,31 +99,31 @@ Usage:
 Examples:
   # Format specified Markdown file, and write to stdout
   mdfmt README.md
-  
+
   # Format and rewrite for specified Markdown file
   mdfmt -w README.md
-  
+
   # Display diffs instead of rewriting Markdown files
   mdfmt -d README.md
-  
+
   # List files whose formatting differs from mdfmt's
   mdfmt -l .
-  
+
   # Format, rewrite, and display diffs for specified Markdown file
   mdfmt -d -w README.md
-  
+
   # Format and rewrite all Markdown file in current directory
   mdfmt -w *.md
-  
+
   # Recursive format and rewrite all Markdown file in current directory
   mdfmt -w .
-  
+
   # Format and rewrite the specified Markdown file and directory
   mdfmt -w README.md testdir/
-  
+
   # Format stdin to stdout
   cat README.md | mdfmt
-  
+
   # Show version info
   mdfmt -V
 
@@ -137,6 +137,6 @@ Flags:
 
 ## 🙏 感谢
 
-* Markdown 引擎使用 [88250/lute](https://github.com/88250/lute), 很酷!
-* 命令行工具模板来自 [elliotxx/go-cli-prototype](https://github.com/elliotxx/go-cli-prototype)
-* Markdown 规范遵循 [GFM](https://github.github.com/gfm/)/[CommonMark](https://commonmark.org/)
+- Markdown 引擎使用 [88250/lute](https://github.com/88250/lute), 很酷!
+- 命令行工具模板来自 [elliotxx/go-cli-prototype](https://github.com/elliotxx/go-cli-prototype)
+- Markdown 规范遵循 [GFM](https://github.github.com/gfm/)/[CommonMark](https://commonmark.org/)

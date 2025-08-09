@@ -65,7 +65,7 @@ class Formatter:
 
     def run(self):
         """运行格式化"""
-        # 删除冗余文件,同时也修正 self.img_file_list        
+        # 删除冗余文件,同时也修正 self.img_file_list             
         self.del_img()
 
         # 按照哈希号重命名附件文件
