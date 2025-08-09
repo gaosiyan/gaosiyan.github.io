@@ -1,0 +1,33 @@
+/* 与Table组件保持一致的风格 */
+.figureContainer {
+  margin: 1rem auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  scroll-margin-top: 100px; /* 避免被导航栏遮挡 */
+}
+
+.image {
+  max-width: 100%;
+  height: auto;
+  border: 1px solid #e0e0e0;
+  padding: 4px;
+}
+
+.caption {
+  text-align: center;
+  margin-top: 0.5rem;
+  font-size: 0.9em;
+  color: #333;
+}
+
+.figRef {
+  color: var(--ifm-link-color);
+  text-decoration: var(--ifm-link-decoration);
+}
+
+.figRef:hover {
+  color: var(--ifm-link-hover-color);
+  text-decoration: var(--ifm-link-hover-decoration);
+}
