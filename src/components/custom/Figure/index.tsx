@@ -6,11 +6,11 @@ import { FigureProps, FigureRefProps } from "./types";
 const figureMap: Record<string, number> = {};
 let counter = 0;
 
-export const Figure: React.FC<FigureProps> = ({ 
-  id, 
-  src, 
-  title, 
-  width = "80%"  // 设置默认宽度为80%
+export const Figure: React.FC<FigureProps> = ({
+  id,
+  src,
+  title,
+  width = "80%", // 设置默认宽度为80%
 }) => {
   // 为新图片分配编号
   if (!figureMap[id]) {
@@ -20,16 +20,12 @@ export const Figure: React.FC<FigureProps> = ({
   const figureNumber = figureMap[id];
 
   return (
-    <div 
-      className={styles.figureContainer} 
+    <div
+      className={styles.figureContainer}
       id={`fig-${id}`}
-      style={{ width }}  // 应用宽度配置
+      style={{ width }} // 应用宽度配置
     >
-      <img
-        src={src}
-        alt={title}
-        className={styles.image}
-      />
+      <img src={src} alt={title} className={styles.image} />
       <div className={styles.title}>
         图{figureNumber}: {title}
       </div>
