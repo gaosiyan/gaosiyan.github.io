@@ -26,7 +26,7 @@ class Formatter:
         """
         root_dir: 文件目录
         """
-        img_dir = os.path.join(root_dir, "static/img/content")
+        img_dir = os.path.join(root_dir, "static//img/content")
 
         if os.path.isdir(img_dir) is False:
             raise FormatterError(f"{img_dir} 目录不存在")
@@ -79,7 +79,7 @@ class Formatter:
         """返回所有引用的附件列表"""
         ref_img_file_list: list[str] = []
         for md_file_list in self.md_file_list:
-            ref_img_file_list.extend(re.findall(r"img/content/([^/\s]*\.[^/\s]*)['\"]", self.get_text_file_content(md_file_list)))
+            ref_img_file_list.extend(re.findall(r"/img/content/([^/\s]*\.[^/\s]*)['\"]", self.get_text_file_content(md_file_list)))
 
         ref_img_file_list = list(set(ref_img_file_list))
         print(f"共引用 {len(ref_img_file_list)} 个附件")
@@ -125,10 +125,10 @@ class Formatter:
                 for md_file in self.md_file_list:
                     write_flag = False
                     old_content = self.get_text_file_content(md_file)
-                    if len(re.findall(rf"img/content/{old_name}", old_content)) != 0:
+                    if len(re.findall(rf"/img/content/{old_name}", old_content)) != 0:
                         new_content = re.sub(
-                            rf"img/content/{old_name}",
-                            rf"img/content/{new_name}",
+                            rf"/img/content/{old_name}",
+                            rf"/img/content/{new_name}",
                             old_content,
                         )
                         write_flag = True
