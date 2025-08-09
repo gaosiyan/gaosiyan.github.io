@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import styles from "./styles.module.css";
 import { FigureProps, FigureRefProps } from "./types";
 import { useMDXComponents } from "@mdx-js/react";
@@ -10,7 +10,7 @@ import rehypeKatex from "rehype-katex";
 const figureMap: Record<string, number> = {};
 let counter = 0;
 
-const renderTitle = async (title: React.ReactNode) => {
+const renderTitle = async (title: ReactNode) => {
   if (typeof title === "string") {
     const code = await compile(title, {
       outputFormat: "function-body",
@@ -32,7 +32,7 @@ export const Figure: React.FC<FigureProps> = ({
   title,
   width = "80%",
 }) => {
-  const [titleContent, setTitleContent] = React.useState<React.ReactNode>(null);
+  const [titleContent, setTitleContent] = React.useState<ReactNode>(null);
 
   React.useEffect(() => {
     const loadTitle = async () => {
@@ -55,9 +55,8 @@ export const Figure: React.FC<FigureProps> = ({
         alt={typeof title === "string" ? title : undefined}
         className={styles.image}
       />
-      {/* 保持标题容器类名，通过CSS深度控制 */}
       <div className={styles.title}>
-        图{figureNumber}: {titleContent || title}
+        图 {figureNumber}: {titleContent || title}
       </div>
     </div>
   );
@@ -68,7 +67,7 @@ export const FigureRef: React.FC<FigureRefProps> = ({ id }) => {
 
   return figureNumber ? (
     <a href={`#fig-${id}`} className={styles.figureRef}>
-      图{figureNumber}
+      图 {figureNumber}
     </a>
   ) : null;
 };

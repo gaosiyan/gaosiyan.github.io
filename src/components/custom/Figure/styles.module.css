@@ -1,3 +1,4 @@
+/* Figure/styles.module.css */
 /* 基础样式保持不变 */
 .figureContainer {
   margin: 1rem auto;
@@ -19,7 +20,7 @@
 .title {
   text-align: center;
   margin-top: 0.5rem;
-  font-size: 0.9em;
+  font-size: 0.8em; /* 字体调小 */
   color: #333;
   line-height: 2; /* 增加行高避免公式与文字重叠 */
   width: 100%; /* 限制标题宽度与图片一致 */

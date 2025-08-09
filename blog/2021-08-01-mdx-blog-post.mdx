@@ -25,8 +25,27 @@ For example, use JSX to create an interactive button:
 
 <button onClick={() => alert("button clicked!")}>Click me!</button>
 
-$x^2$
+数学公式展示: $x^2$
 
-<Figure id="图片测试" src="/img/docusaurus.png" title="$x^2$" width="80%" />
+<Figure
+  id="图片测试 1"
+  src="/img/docusaurus.png"
+  title="标题不含数学公式"
+  width="80%"
+/>
+如 <FigureRef id="图片测试 1" />
+图片引用
 
-<FigureRef id="图片测试" /> 图片引用
+<Figure id="图片测试 2" src="/img/docusaurus.png" title="$x^2$" width="80%" />
+
+<Figure
+  id="图片测试 3"
+  src="/img/docusaurus.png"
+  title="$x^2$ 开始位置有数学公式"
+/>
+
+<Figure
+  id="图片测试 4"
+  src="/img/docusaurus.png"
+  title="结束位置有数学公式 $x^2$"
+/>

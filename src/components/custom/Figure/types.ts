@@ -1,12 +1,12 @@
-import type { ReactNode } from "react"; // æ–°å¢å¯¼å…¥
+import type { ReactNode } from "react";
 
 export interface FigureProps {
-  id: string; // å›¾ç‰‡å”¯ä¸€æ ‡è¯†
-  src: string; // å›¾ç‰‡è·¯å¾„
-  title: ReactNode; // æ”¯æŒReactèŠ‚ç‚¹ï¼ˆå«å…¬å¼ï¼‰
-  width?: string; // å®½åº¦é…ç½®ï¼Œå¯é€‰
+  id: string; // Í¼Æ¬Î¨Ò»±êÊ¶
+  src: string; // Í¼Æ¬Â·¾¶
+  title: ReactNode; // Ö§³ÖReact½Úµã£¨º¬¹«Ê½£©
+  width?: string; // ¿í¶ÈÅäÖÃ£¬¿ÉÑ¡
 }
 
 export interface FigureRefProps {
-  id: string; // å¼•ç”¨çš„å›¾ç‰‡ID
+  id: string; // ÒıÓÃµÄÍ¼Æ¬ID
 }
