@@ -5,8 +5,6 @@ authors: [slorber]
 tags: [docusaurus]
 ---
 
-import Figure, { FigureRef } from "@site/src/components/custom/Figure";
-
 Blog posts support [Docusaurus Markdown features](https://docusaurus.io/docs/markdown-features), such as [MDX](https://mdxjs.com/).
 
 :::tip
@@ -23,33 +21,4 @@ For example, use JSX to create an interactive button:
 <button onClick={() => alert("button clicked!")}>Click me!</button>
 ```
 
-<button onClick={() => alert("button clicked!")}>Click me!</button>
-
-数学公式展示: $x^2$
-
-<Figure
-  id="图片测试 1"
-  src="/img/content/3d88ea8fe3a24e4d8c8327629f9ec2bcec6e6406.png"
-  title="标题不含数学公式"
-  width="80%"
-/>
-如 <FigureRef id="图片测试 1" /> 图片引用
-
-<Figure
-  id="图片测试 2"
-  src="/img/content/3d88ea8fe3a24e4d8c8327629f9ec2bcec6e6406.png"
-  title="$x^2$"
-  width="80%"
-/>
-
-<Figure
-  id="图片测试 3"
-  src="/img/content/3d88ea8fe3a24e4d8c8327629f9ec2bcec6e6406.png"
-  title="$x^2$ 开始位置有数学公式"
-/>
-
-<Figure
-  id="图片测试 4"
-  src="/img/content/3d88ea8fe3a24e4d8c8327629f9ec2bcec6e6406.png"
-  title="结束位置有数学公式 $x^2$"
-/>
+<button onClick={() => alert("button clicked!")}>Click me!</button>

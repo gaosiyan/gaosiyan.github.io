@@ -1,0 +1,70 @@
+---
+sidebar_position: 3
+sidebar_label: "自定义组件"
+---
+
+import Figure, { FigureRef } from "@site/src/components/custom/Figure";
+
+# Figure 自定义组件
+
+全量接口使用:
+
+```jsx
+<Figure
+  src="/img/content/3d88ea8fe3a24e4d8c8327629f9ec2bcec6e6406.png" {/* 图片路径,必选参数 */}
+  title="普通标题" {/* 图片标题,必选参数, 支持 LaTeX 数学公式 */}
+  id="图片测试_1"  {/* 图片锚点,可选参数, 默认值和 title 相同 */}
+  width="80%"     {/* 图片宽度,可选参数, 默认值 80% */}
+/>
+```
+
+对应的锚点使用:
+
+```jsx
+如 <FigureRef id="图片测试_1" /> 所示...
+```
+
+渲染效果如下 <FigureRef id="图片测试_1" /> 所示:
+
+<Figure
+  src="/img/content/3d88ea8fe3a24e4d8c8327629f9ec2bcec6e6406.png"
+  title="普通标题"
+  id="图片测试_1"
+  width="80%"
+/>
+
+最简化的接口调用:
+
+只用 `src` 和 `title` 两个必选参数,锚点依然可用,可以使用 `title` 作为锚点使用:
+
+```jsx
+<Figure
+  src="/img/content/3d88ea8fe3a24e4d8c8327629f9ec2bcec6e6406.png"
+  title="最简化的接口调用"
+/>
+```
+
+渲染效果如下 <FigureRef id="最简化的接口调用" /> 所示:
+
+<Figure
+  src="/img/content/3d88ea8fe3a24e4d8c8327629f9ec2bcec6e6406.png"
+  title="最简化的接口调用"
+/>
+
+标题中包含 LaTeX 数学公式(支持标题任意位置包含 LaTeX 数学公式):
+
+```jsx
+<Figure
+  src="/img/content/3d88ea8fe3a24e4d8c8327629f9ec2bcec6e6406.png"
+  title="$x^2$"
+  id="标题中只有_LaTeX_数学公式"
+/>
+```
+
+渲染效果如下 <FigureRef id="标题中只有 LaTeX 数学公式" /> 所示:
+
+<Figure
+  src="/img/content/3d88ea8fe3a24e4d8c8327629f9ec2bcec6e6406.png"
+  title="$x^2$"
+  id="标题中只有 LaTeX 数学公式"
+/>
