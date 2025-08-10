@@ -3,6 +3,7 @@ import type { Config } from "@docusaurus/types";
 import type * as Preset from "@docusaurus/preset-classic";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
+import type { PluginOptions as SearchPluginOptions } from "@easyops-cn/docusaurus-search-local";
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
@@ -36,8 +37,8 @@ const config: Config = {
   // useful metadata like html lang. For example, if your site is Chinese, you
   // may want to replace "en" with "zh-Hans".
   i18n: {
-    defaultLocale: "zh-Hans", // 默认语言改为中文
-    locales: ["zh-Hans", "en"], // 支持中英文
+    defaultLocale: "zh", // 默认语言改为中文
+    locales: ["zh", "en"], // 支持中英文
   },
 
   presets: [
@@ -74,6 +75,36 @@ const config: Config = {
           customCss: "./src/css/custom.css",
         },
       } satisfies Preset.Options,
+    ],
+  ],
+  // 插件配置
+  plugins: [
+    [
+      // 本地搜索插件
+      "@easyops-cn/docusaurus-search-local",
+      {
+        // 核心配置
+        indexDocs: true,
+        indexBlog: true,
+        indexPages: false,
+        docsRouteBasePath: "/docs",
+        blogRouteBasePath: "/blog",
+
+        // 多语言支持
+        language: ["zh", "en"],
+        removeDefaultStopWordFilter: true, // 中文必须开启
+        highlightSearchTermsOnTargetPage: true, // 在目标页面高亮搜索词
+        explicitSearchResultPath: true, // 显示结果的完整路径
+
+        // 搜索结果显示
+        searchResultLimits: 8,
+        searchResultContextMaxLength: 50,
+
+        // 类型安全的额外配置
+        hashed: false, // 生成带哈希的索引文件（避免缓存）
+
+        searchBarPosition: "right", // 搜索框位置（left/right）
+      } satisfies import("@easyops-cn/docusaurus-search-local").PluginOptions,
     ],
   ],
 

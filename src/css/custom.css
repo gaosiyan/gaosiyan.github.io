@@ -31,3 +31,18 @@
 
 /* src/css/custom.css */
 @import "katex/dist/katex.css";
+
+/* docusaurus-search-local 相关配置 Start*/
+
+/* 调整搜索框宽度 */
+.easyops-searchbox {
+  width: 300px;
+}
+
+/* 高亮搜索结果中的匹配词 */
+.easyops-search-highlight {
+  color: #ff4757;
+  font-weight: bold;
+}
+
+/* docusaurus-search-local 相关配置 End*/
