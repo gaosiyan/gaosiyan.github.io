@@ -4,6 +4,7 @@ sidebar_label: "自定义组件"
 ---
 
 import Figure, { FigureRef } from "@site/src/components/custom/Figure";
+import Table, { TableRef } from "@site/src/components/custom/Table";
 
 # Figure 自定义组件
 
@@ -69,4 +70,18 @@ import Figure, { FigureRef } from "@site/src/components/custom/Figure";
   src="/img/content/3d88ea8fe3a24e4d8c8327629f9ec2bcec6e6406.png"
   title="$x^2$"
   id="标题中只有 LaTeX 数学公式"
-/>
+/>
+
+# Table 自定义组件
+
+<Table title="基本信息表">
+  | 姓名 | 年龄 | 性别 | | --- | --- | --- | | 张三 | 25 | 男 | | 李四 | 30 | 女
+  | | 王五 | 28 | 男 |
+</Table>
+
+<Table title="数学公式示例表">
+  | 公式 | 说明 | | --- | --- | | $E=mc^2$ | 质能方程 | | $\sum_{(i = 1)}^n i =
+  \frac{n(n + 1)}
+  {2}$ | 求和公式 | | $\int_a^b f(x) dx$ | 定积分 | | $\alpha + \beta = \gamma$
+  | 希腊字母示例 |
+</Table>
