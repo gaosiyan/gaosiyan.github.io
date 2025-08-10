@@ -2,6 +2,9 @@
 sidebar_position: 2
 sidebar_label: "第三方库安装"
 ---
+import Figure, { FigureRef } from "@site/src/components/custom/Figure";
+
+import Comments from '@site/src/components/custom/Comments';
 
 table 库
 
@@ -24,4 +27,26 @@ npm install @easyops-cn/docusaurus-search-local @docusaurus/types
 markdown 扩展
 ```bash
 npm install remark-gfm
-```
+```
+
+Discussions 新建 Discussions Github 仓库
+
+```
+npm install @giscus/react
+```
+已在仓库中启用 GitHub Discussions(仓库 Settings → Features → 勾选 Discussions)
+
+https://giscus.app/zh-CN
+
+<Figure
+  src="/img/content/9ef4f3f064036b0636f28018f52388fd0d5096f5.png"
+  title="giscus 配置 1"
+/>
+
+<Figure
+  src="/img/content/ef49a06999dc00100bf51ce366986483809b684d.png"
+  title="giscus 配置 2"
+/>
+
+{/* 引入评论区 */}
+<Comments />
