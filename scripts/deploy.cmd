@@ -1,4 +1,5 @@
 @echo off
+set /p commit_msg=请输入提交日志:
 :: 保存初始目录（当前执行脚本时的目录）
 set "INIT_DIR=%cd%"
 
@@ -7,12 +8,11 @@ set "SCRIPT_DIR=%~dp0"
 
 :: 切换到脚本所在目录
 cd /d "%SCRIPT_DIR%"
+call 格式化.cmd
 
+cd /d  "%SCRIPT_DIR%" 
 cd ..
 
-set /p commit_msg=请输入提交日志:
-
-call 格式化.cmd
 git add . && git commit -m "%commit_msg%" && git push -u origin master && npm run deploy
 
 cd /d  "%INIT_DIR%"
