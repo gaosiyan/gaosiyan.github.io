@@ -2,7 +2,7 @@
 sidebar_position: 3
 sidebar_label: "自定义组件"
 ---
-
+import remarkGfm from 'remark-gfm'
 import Figure, { FigureRef } from "@site/src/components/custom/Figure";
 import Table, { TableRef } from "@site/src/components/custom/Table";
 
@@ -72,12 +72,12 @@ import Table, { TableRef } from "@site/src/components/custom/Table";
   id="标题中只有 LaTeX 数学公式"
 />
 
-| 表头 1     | 表头 2            |
+| <div style={{ textAlign: 'right' }}>表头 1</div>     | 表头 2            |
 | ---------- | ----------------- |
 | $E = mc^2$ | $a^2 + b^2 = c^2$ |
 
 <Table title="表格标题" id="table1">   
-| 表头 1     | 表头 2            |    
+| <div style={{ textAlign: 'right' }}>表头 1</div>     | 表头 2            |
 | ---------- | ----------------- |
 | $E = mc^2$ | $a^2 + b^2 = c^2$ |
 </Table>
@@ -85,8 +85,45 @@ import Table, { TableRef } from "@site/src/components/custom/Table";
 如 <TableRef id="table1" /> 所示:
 如 <TableRef id="table2" /> 所示:
 
-<Table title="表格标题$x^2$" id="table2">
-| 表头 1     | 表头 2            |
-| ---------- | ----------------- |
-| $E = mc^2$ | $a^2 + b^2 = c^2$ |
+<Table title="支持公式的合并表格" id="working-table">
+  <table>
+    <thead>
+      <tr>
+        {/* 注意:JSX 中合并属性用 colSpan/rowSpan(驼峰式) */}
+        <th colSpan={2}>表头跨 2 列($x^2 + y^2 = r^2$)</th>
+        <th>表头 3</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td rowSpan={2}>
+          左列跨 2 行<br />
+          公式:$E = mc^2$
+        </td>
+        <td>
+          单元格 (2,2)<br />
+          $a + b = c$
+        </td>
+        <td>
+          单元格 (2,3)<br />
+          $\sum_{i=1}^n i$
+        </td>
+      </tr>
+      <tr>
+        <td>
+          单元格 (3,2)<br />
+          $\int_a^b f(x)dx$
+        </td>
+        <td>
+          单元格 (3,3)<br />
+          $\lim_{x \to 0} \frac{\sin x}{x}$
+        </td>
+      </tr>
+      <tr>
+        <td colSpan={3}>
+          底部跨 3 列($\alpha + \beta = \gamma$)
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </Table>
