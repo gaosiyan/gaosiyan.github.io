@@ -72,16 +72,136 @@ import Table, { TableRef } from "@site/src/components/custom/Table";
   id="标题中只有 LaTeX 数学公式"
 />
 
-# Table 自定义组件
+<Table
+  id="column-merge-demo"
+  title="季度销售数据汇总(列合并示例)"
+  headers={[
+    { content: "产品类别" },
+    { content: "Q1-Q2 合计", colSpan: 2, align: "center" }, // 表头合并 2 列
+    { content: "Q3" },
+    { content: "Q4" },
+  ]}
+  rows={[
+    {
+      cells: [
+        { content: "电子产品" },
+        { content: "150 万", colSpan: 2, align: "right" }, // 内容单元格合并 2 列
+        { content: "80 万", align: "right" },
+        { content: "95 万", align: "right" },
+      ],
+    },
+    {
+      cells: [
+        { content: "家居用品" },
+        { content: "90 万", colSpan: 2, align: "right" },
+        { content: "50 万", align: "right" },
+        { content: "62 万", align: "right" },
+      ],
+    },
+  ]}
+/>
 
-<Table title="基本信息表">
-  | 姓名 | 年龄 | 性别 | | --- | --- | --- | | 张三 | 25 | 男 | | 李四 | 30 | 女
-  | | 王五 | 28 | 男 |
-</Table>
+<Table
+  id="row-merge-demo"
+  title="员工部门归属(行合并示例)"
+  headers={[
+    { content: "部门", align: "center" },
+    { content: "姓名", align: "center" },
+    { content: "职位", align: "center" },
+  ]}
+  rows={[
+    {
+      cells: [
+        { content: "技术部", rowSpan: 3, valign: "middle" }, // 合并 3 行
+        { content: "张三" },
+        { content: "前端开发" },
+      ],
+    },
+    {
+      cells: [
+        // 被合并的单元格无需重复定义,会自动跳过
+        { content: "李四" },
+        { content: "后端开发" },
+      ],
+    },
+    {
+      cells: [{ content: "王五" }, { content: "测试工程师" }],
+    },
+  ]}
+/>
 
-<Table title="数学公式示例表">
-  | 公式 | 说明 | | --- | --- | | $E=mc^2$ | 质能方程 | | $\sum_{(i = 1)}^n i =
-  \frac{n(n + 1)}
-  {2}$ | 求和公式 | | $\int_a^b f(x) dx$ | 定积分 | | $\alpha + \beta = \gamma$
-  | 希腊字母示例 |
-</Table>
+<Table
+  id="col-merge-align"
+  title="列合并对齐效果展示"
+  headers={[
+    { content: "左对齐合并列", colSpan: 2, align: "left" },
+    { content: "右对齐合并列", colSpan: 2, align: "right" },
+  ]}
+  rows={[
+    {
+      cells: [
+        {
+          content: "这是跨 2 列的左对齐内容(较长文本展示效果)",
+          colSpan: 2,
+          align: "left",
+          valign: "top",
+        },
+        {
+          content: "这是跨 2 列的右对齐内容",
+          colSpan: 2,
+          align: "right",
+          valign: "bottom",
+        },
+      ],
+    },
+  ]}
+/>
+
+<Table
+  id="row-merge-align"
+  title="行合并对齐效果展示"
+  headers={[
+    { content: "分类", align: "center" },
+    { content: "详情", align: "left" },
+  ]}
+  rows={[
+    {
+      cells: [
+        {
+          content: "水果类",
+          rowSpan: 3,
+          valign: "top", // 垂直靠上对齐
+          align: "center",
+        },
+        { content: "苹果:红色/绿色,酸甜口味" },
+      ],
+    },
+    {
+      cells: [{ content: "香蕉:黄色,软糯香甜" }],
+    },
+    {
+      cells: [{ content: "橙子:橙色,富含维生素 C" }],
+    },
+  ]}
+/>
+
+<Table
+  id="no-header-table"
+  title="无表头数据列表"
+  rows={[
+    {
+      cells: [
+        { content: "项目 A", align: "left" },
+        { content: "已完成", align: "center" },
+        { content: "$x^2$", align: "right" },
+      ],
+    },
+    {
+      cells: [
+        { content: "项目 B", align: "left" },
+        { content: "进行中", align: "center" },
+        { content: "2023-12-31", align: "right" },
+      ],
+    },
+  ]}
+/>

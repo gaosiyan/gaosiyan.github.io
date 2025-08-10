@@ -1,65 +1,69 @@
-.tableContainer {
-  margin: 1.5rem auto;
-  padding: 1rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  background-color: #fff;
-}
-
-.title {
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
-  color: #333;
-  text-align: center;
-}
-
-.filterInput {
-  width: 100%;
-  padding: 0.5rem;
-  margin-bottom: 1rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 0.9rem;
-}
-
-.filterInput:focus {
-  outline: none;
-  border-color: #66afe9;
-  box-shadow: 0 0 0 3px rgba(102, 175, 233, 0.1);
-}
-
-.tableWrapper {
-  overflow-x: auto;
-}
-
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  border-spacing: 0;
-}
-
-.table th,
-.table td {
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  word-break: break-word;
-}
-
-.table th {
-  background-color: #f8f9fa;
-  font-weight: 500;
-}
-
-.table tr:hover {
-  background-color: #f5f5f5;
-}
-
+/* 表格引用样式 */
 .tableRef {
-  color: #007bff;
-  text-decoration: none;
+  color: var(--ifm-link-color);
+  text-decoration: var(--ifm-link-decoration);
 }
 
 .tableRef:hover {
-  text-decoration: underline;
+  color: var(--ifm-link-hover-color);
+  text-decoration: var(--ifm-link-hover-decoration);
+}
+
+/* 表格容器样式 */
+.tableContainer {
+  margin: 1rem auto;
+  position: relative;
+  display: table;
+  scroll-margin-top: 100px; /* 防止被固定导航栏遮挡 */
+}
+
+/* 表格标题样式 - 比正文字体小 */
+.tableTitle {
+  text-align: center;
+  margin-top: 8px;
+  display: block;
+  font-size: 0.9em; /* 小于正文字体 */
+}
+
+/* 表格基础样式 */
+.table {
+  border-collapse: collapse;
+  margin: 0 auto;
+  font-size: 0.9em; /* 表格内容字体小于正文 */
+  width: 100%; /* 让表格适应容器宽度 */
+}
+
+/* 表头单元格样式 - 双线分割 */
+.table thead th {
+  font-weight: bold; /* 表头粗体 */
+  color: inherit; /* 与正文颜色一致 */
+  padding: 8px 12px;
+  border: 1px solid #999; /* 表头单元格边框 */
+  border-bottom: 3px double #666; /* 表头底部双线效果 */
+}
+
+/* 普通单元格样式 */
+.table td {
+  border: 1px solid #999; /* 单元格边框 */
+  padding: 8px 12px;
+}
+
+/* 对齐方式类 */
+.alignLeft {
+  text-align: left;
+}
+.alignCenter {
+  text-align: center;
+}
+.alignRight {
+  text-align: right;
+}
+.valignTop {
+  vertical-align: top;
+}
+.valignMiddle {
+  vertical-align: middle;
+}
+.valignBottom {
+  vertical-align: bottom;
 }
