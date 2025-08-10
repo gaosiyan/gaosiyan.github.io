@@ -13,8 +13,8 @@ const Comments: React.FC = () => {
       <Giscus
         repo="gaosiyan/Discussions"
         repoId="R_kgDOPbjS8g"
-        category="[在此输入分类名]" // 替换为你的分类名，如"Comments"
-        categoryId="[在此输入分类 ID]" // 替换为你的分类ID
+        category="Announcements" // 替换为你的分类名，如"Comments"
+        categoryId="DIC_kwDOPbjS8s4CuAmL" // 替换为你的分类ID
         mapping="pathname"
         strict="0"
         reactionsEnabled="1"
