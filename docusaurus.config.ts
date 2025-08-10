@@ -86,7 +86,7 @@ const config: Config = {
         // 核心配置
         indexDocs: true,
         indexBlog: true,
-        indexPages: false,
+        indexPages: true,
         docsRouteBasePath: "/docs",
         blogRouteBasePath: "/blog",
 
