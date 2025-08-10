@@ -77,6 +77,16 @@ import Table, { TableRef } from "@site/src/components/custom/Table";
 | $E = mc^2$ | $a^2 + b^2 = c^2$ |
 
 <Table title="表格标题" id="table1">
-  | 表头 1 | 表头 2 | |--------|--------| | $E = mc^2$ | $a^2 + b^2 = c^2$ | |
-  $\int_0^\infty e^{-x ^ 2} dx$ | $f(x) = \sin(x)$ |
-</Table>
+| 表头 1     | 表头 2            |
+| ---------- | ----------------- |
+| $E = mc^2$ | $a^2 + b^2 = c^2$ |
+</Table>
+
+如 <TableRef id="table1" /> 所示:
+如 <TableRef id="table2" /> 所示:
+
+<Table title="表格标题$x^2$" id="table2">
+| 表头 1     | 表头 2            |
+| ---------- | ----------------- |
+| $E = mc^2$ | $a^2 + b^2 = c^2$ |
+</Table>

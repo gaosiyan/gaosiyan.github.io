@@ -1,5 +1,6 @@
+/* Table/styles.module.css */
 .tableContainer {
-  margin: 2rem auto;
+  margin: 1rem auto;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -7,21 +8,48 @@
   scroll-margin-top: 100px;
 }
 
-.tableTitle {
+/* 标题容器样式 */
+.title {
   text-align: center;
-  font-weight: bold;
-  margin-top: 1rem;
-  font-size: 1.2em;
+  margin: 0.5rem 0;
+  font-size: 0.8em;
+  color: #333;
+  line-height: 2;
+  width: 100%;
+  overflow-wrap: break-word;
 }
 
-.markdown-table {
-  margin-top: 1rem;
-  width: 100%;
+/* 强制KaTeX所有元素在行内流动 */
+.title .katex-display {
+  display: inline !important;
+  margin: 0 !important;
+  padding: 0 0.2em;
+}
+
+/* 处理KaTeX内部嵌套结构 */
+.title .katex-display > .katex {
+  display: inline-block !important;
+  vertical-align: baseline;
+  white-space: nowrap;
+}
+
+/* 覆盖可能的块级容器 */
+.title .katex-display > .katex > .katex-html {
+  display: inline !important;
+}
+
+/* 确保标题内所有子元素不强制换行 */
+.title * {
+  display: inline;
+  vertical-align: baseline;
 }
 
 .tableRef {
-  font-size: 1.2em;
-  margin: 1rem;
-  text-decoration: none;
-  color: #0070f3;
+  color: var(--ifm-link-color);
+  text-decoration: var(--ifm-link-decoration);
+}
+
+.tableRef:hover {
+  color: var(--ifm-link-hover-color);
+  text-decoration: var(--ifm-link-hover-decoration);
 }
