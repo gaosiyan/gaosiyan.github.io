@@ -2,4 +2,4 @@
 cd /d %~dp0
 cd ..
 
-npm run build
+npm run serve

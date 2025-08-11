@@ -1,0 +1,100 @@
+---
+sidebar_position: 1
+sidebar_label: "UE 上报 HARQ-ACK 的流程"
+---
+
+import Figure, { FigureRef } from "@site/src/components/custom/Figure";
+
+:::tip
+
+本节内容主要参考 Release 12 系列协议,具体章节如下:
+- 36.213 7.3
+
+:::
+
+# 帧结构
+
+两种帧结构:
+1. 帧结构 1(Frame structure type 1),即 FDD;
+2. 帧结构 2(Frame structure type 2),即 TDD.
+
+补充帧结构,注意协议演变
+
+<Figure
+  src="/img/content/7a4251a19af6b054488c9876e66d738b0fd3c1b6.png"
+  title="切换点和切换周期"
+/>
+
+# PUCCH 相关演进
+待补充
+
+# 反馈时序
+
+FDD 固定在 n + 4 反馈
+
+TDD 帧配比 0 反馈时序,如下 <FigureRef id="TDD 帧配比 0 反馈时序" /> 
+
+<Figure
+  src="/img/content/9c0837f155f7c14484cf2afdc882b4c976403b01.png"
+  title="TDD 帧配比 0 反馈时序"
+/>
+
+TDD 帧配比 1 反馈时序,如下 <FigureRef id="TDD 帧配比 1 反馈时序" /> 
+
+<Figure
+  src="/img/content/022b8068a128d7f104419ebc624eb803e631b41b.png"
+  title="TDD 帧配比 1 反馈时序"
+/>
+
+TDD 帧配比 2 反馈时序,如下 <FigureRef id="TDD 帧配比 2 反馈时序" /> 
+
+<Figure
+  src="/img/content/00a46d43ae669f4bb6571e68dfff1e36524dbeb5.png"
+  title="TDD 帧配比 2 反馈时序"
+/>
+
+普通 TDD 的反馈时域,如下 <FigureRef id="普通 TDD 的反馈时序" /> 即 36.213 Table 10.1.3.1-1:
+
+<Figure
+  src="/img/content/5bc414e9f71bd650112c55bceba9f1d57949c034.png"
+  title="普通 TDD 的反馈时序"
+/>
+
+# UE 上报 HARQ-ACK 的流程
+
+FDD 小区(包括 FDD CA)场景,UE 上报 HARQ-ACK 的流程,参考 7.3.1 节.
+
+TDD 小区(包括 TDD CA)场景,UE 上报 HARQ-ACK 的流程,参考 7.3.2 节.
+
+FDD 和 TDD 组 CA,且主小区为 FDD 场景, UE 上报 HARQ-ACK 的流程,参考 7.3.3 节.
+
+FDD 和 TDD 组 CA,且主小区为 TDD 场景, UE 上报 HARQ-ACK 的流程,参考 7.3.4 节.
+
+:::note
+1. 协议中的 eIMTA 是 R12 中引入的新功能,可以简单理解为动态 TDD,用于降低 TDD 网络间的干扰,暂时不用关注;
+2. 不考虑不同帧配比的 TDD 小区组 CA 的场景,协议中暂时没有找到相关约束的描述,但是 36.213 7.3.2.2 TDD HARQ-ACK reporting procedure for different UL/DL configurations 的内容是干啥的,暂时不关注.
+3. PCell, SCell 等概念在 36.300 7.5 节有描述.
+:::
+
+## TDD HARQ-ACK 上报流程
+
+本节是 36.213 7.3.2 节的内容的翻译
+
+若 UE 配置非 CA,或者配置了 CA,并且 CA 所有服务小区的子帧配比相同则按 7.3.2.1 节流程上报 HARQ-ACK,否则参考 7.3.2.2 节(暂时不关注 7.3.2.2).
+
+当仅需传输正调度请求(SR)时,UE 应使用 PUCCH 格式 1(见 36.211 5.4.1)
+
+### 7.3.2.1 相同 UL/DL 配置的 TDD HARQ-ACK 上报流程
+
+对于 TDD,当 UE 在 $n-k$ 子帧检测到 PDSCH 传输或者指示下行 SPS 释放的 PDCCH/EPDCCH 时,UE 需要在子帧 $n$ 发送对应的 HARQ-ACK 响应.
+:::note
+1. 有可能出现单独的 PDSCH,即 SPS 激活时没有对应 DCI 的 PDSCH;
+2. 指示下行 SPS 释放的 PDCCH/EPDCCH,只有 PDCCH 无对应的 PDSCH.
+:::
+
+在 TDD 配置下,如果配置了 Format 3 反馈,服务小区中 Normal CP 特殊子帧配置 0 和 5 或 Extended CP 特殊子帧配置 0 和 4,该服务小区的特殊子帧应从 HARQ-ACK 码本大小确定中排除.
+
+:::note
+1. 上面描述的配置在特殊子帧上 DwPTS 字段极短(仅 3-4 OFDM 符号),无法承载有效 PDSCH 数据.所以不会在这些子帧调度 PDSCH;
+2. 理论上来说可以发送 PDCCH,即可以发送指示下行 SPS 释放的 PDCCH/EPDCCH,但协议也规定不会在这些子帧发送指示下行 SPS 释放的 PDCCH/EPDCCH,所以 Format 3 的码本中可以不用预留.
+:::
