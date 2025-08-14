@@ -1,0 +1,54 @@
+---
+sidebar_position: 1
+sidebar_label: "36.213 V12.13.0 协议翻译"
+---
+
+import Figure, { FigureRef } from "@site/src/components/custom/Figure";
+
+# 7 PDSCH 相关处理流程 (未完成)
+
+## 7.1 UE 接收 PDSCH 的处理流程 (未完成)
+ 
+## 7.2 UE 上报信道状态信息(CSI)的处理流程 (未完成)
+
+## 7.3 UE 反馈 HARQ-ACK 的处理流程 (未完成)
+
+### 7.3.1 FDD HARQ-ACK 上报流程 (未完成)
+### 7.3.2 TDD HARQ-ACK 上报流程 (未完成)
+<Figure
+  src="/img/content/98bc3b4a309dde8ced3af871b0a26109353d48e5.png"  
+  title="Table 7.3-Z"
+  width="100%"
+/>
+
+### 7.3.3 主小区帧结构类型 1 的 FDD-TDD HARQ-ACK 上报流程 (未完成)
+### 7.3.4 主小区帧结构类型 2 的 FDD-TDD HARQ-ACK 上报流程
+
+当仅传输正 SR 时,UE 应使用 36.211 中条款 5.4.1 定义的 SR PUCCH format 1 资源.
+
+FDD-TDD HARQ-ACK 反馈机制遵循条款 7.3.2.2 所述的 HARQ-ACK 流程,但存在以下例外:
+
+- 对于帧结构类型 1 的服务小区,且 UE 未配置为在其他服务小区中监控 PDCCH/EPDCCH 以调度该服务小区时,$K$ 由 Table 10.1.3A-1 <FigureRef id="Table 10.1.3A-1" /> 定义;否则 $K$ 由 Table 10.1.3.1-1 <FigureRef id="Table 10.1.3.1-1" /> 定义.
+
+- 对于帧结构类型 1 的服务小区,且 UE 未配置为在其他服务小区中监控 PDCCH/EPDCCH 以调度该服务小区时,若 Table 10.1.3A-1 <FigureRef id="Table 10.1.3A-1" />  中该服务小区的 DL-reference UL/DL configuration 属于 \{2,3,4\},则 $B_c^{DL}$ 按条款 7.3.2.2 中 DL-reference UL/DL configuration 为 \{5\} 的服务小区方式确定.
+
+- 对于帧结构类型 1 的服务小区,若配置 PUCCH format 3 用于传输 HARQ-ACK,且对于基于检测到 DCI format 0/4 的 PDCCH/EPDCCH 调整的子帧 $n$ 中的 PUSCH 传输,UE 应假设该服务小区的 UL-reference UL/DL configuration 属于 \{1,2,3,4,5,6\}.
+
+- 对于帧结构类型 1 的服务小区,若各服务小区的 DL-reference UL/DL configuration 均属于 \{0,1,2,3,4,6\},且配置带信道选择的 PUCCH format 1b 用于传输 HARQ-ACK 并有两个已配置服务小区时,UE 应假设该服务小区的 UL-reference UL/DL configuration 属于 \{1,2,3,4,6\}.
+
+- 对于帧结构类型 1 的服务小区,$W_{DAI}^{UL}$ 值由子帧 $n - k'$ (其中 $ k' = 4 $) 中与该服务小区上 PUSCH 对应的 DCI format 0/4 内的下行分配索引(DAI)根据 Table 7.3-Z  <FigureRef id="Table 7.3-Z" /> 确定.
+
+- 对于帧结构类型 1 的服务小区,当配置 PUCCH format 3 用于传输 HARQ-ACK 时,若服务小区的 DL-reference UL/DL configuration 为 0,则载波 $c$ 子帧 $n - k$ 中带对应 PDCCH/EPDCCH 的 PDSCH 传输的 HARQ-ACK 反馈,如果是单 TB TM 模式或应用 spatial HARQ-ACK bundling,关联到 $o_{c,2DAI(k)-1}^{ACK}$,否则关联到 $o_{c,2DAI(k)-2}^{ACK}$ 和 $o_{c,DAI(k)-1}^{ACK}$,其中 $DAI(k)$ 为子帧 $n - k$ 中检测到的 DCI 格式 1A/1B/1D/1/2/2A/2B/2C/2D 内的 DAI 值, $o_{c,2DAI(k)-2}^{ACK}$ 和 $o_{c,2DAI(k)-1}^{ACK}$ 分别为 TB 0 和 TB 1 的 HARQ-ACK 反馈.
+当 $N_{SPS} > 0$ 时,无对应 PDCCH/EPDCCH 的 PDSCH 传输的 HARQ-ACK 映射到 $o_{c,O_c^{ACK}-1}^{ACK}$.未检测到 PDSCH 传输的 HARQ-ACK 反馈比特设置为 NACK.
+
+<Figure
+  src="/img/content/5f8eb7b2fc73ceebb3e8ddfeafa629195c011c56.png"  
+  title="Table 10.1.3A-1"
+  width="100%"
+/>
+
+<Figure
+  src="/img/content/dc7dff33733c8c2405a40f94135f32a05ff11b94.png"
+  title="Table 10.1.3.1-1"
+  width="100%"
+/>
