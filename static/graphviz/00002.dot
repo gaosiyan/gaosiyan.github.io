@@ -1,0 +1,38 @@
+// 配比 1 HARQ-ACK 反馈时序
+
+digraph structs {
+    node [fontname = "Microsoft YaHei"; fontsize=20; shape = record;]; // 设置全局节点属性
+    edge [fontname = "Microsoft YaHei"; fontsize=20; minlen = 2; style = "solid"; arrowsize = 0.8;]; // 设置全局连线属性
+
+    subfrm [label = "<S00>D0 🔽\nm = 0\nk0 = 7|
+                     <S01>S1 🔄\nm = 1\nk1 = 6|
+                     <S02>U2 🔺\nM = 2\n\{7,6\}|
+                     <S03>U3 🔺\nM = 1\n\{4\}|
+                     <S04>D4 🔽\nm = 0\nk0 = 4|
+                     <S05>D5 🔽\nm = 0\nk0 = 7|
+                     <S06>S6 🔄\nm = 1\nk1 = 6|
+                     <S07>U7 🔺\nM = 2\n\{7,6\}|
+                     <S08>U8 🔺\nM = 1\n\{4\}|
+                     <S09>D9 🔽\nm = 0\nk0 = 4|
+                     <S10>D0 🔽\nm =0\nk0 = 7|
+                     <S11>S1 🔄\nm = 1\nk1 = 6|
+                     <S12>U2 🔺\nM = 2\n\{7,6\}|
+                     <S13>U3 🔺\nM = 1\n\{4\}|
+                     <S14>D4 🔽\nm = 0\nk0 = 4|
+                     <S15>D5 🔽\nm = 0\nk0 = 7|
+                     <S16>S6 🔄\nm = 1\nk1 = 6|
+                     <S17>U7 🔺\nM = 2\n\{7,6\}|
+                     <S18>U8 🔺\nM = 1\n\{4\}|
+                     <S19>D9 🔽\nm = 0\nk0 = 4";];      
+    
+    subfrm:S05:n -> subfrm:S12:n [xlabel = "n-k0"; color = orange; fontcolor = orange;];
+    subfrm:S06:n -> subfrm:S12:n [xlabel = "n-k1"; color = orange; fontcolor = orange;];
+
+    subfrm:S09:s -> subfrm:S13:s [xlabel = "n-k0"; color = blue; fontcolor = blue;];
+
+    subfrm:S10:n -> subfrm:S17:n [xlabel = "n-k0"; color = red; fontcolor = red;];
+    subfrm:S11:n -> subfrm:S17:n [xlabel = "n-k1"; color = red; fontcolor = red;];
+
+    subfrm:S14:s -> subfrm:S18:s [xlabel = "n-k0"; color = green; fontcolor = green;];
+
+}
