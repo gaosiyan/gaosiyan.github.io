@@ -1,0 +1,32 @@
+// 配比 0 HARQ-ACK 反馈时序
+
+digraph structs {
+    node [fontname = "Microsoft YaHei"; fontsize=20; shape = record;]; // 设置全局节点属性
+    edge [fontname = "Microsoft YaHei"; fontsize=20; minlen = 2; style = "solid"; arrowsize = 0.8;]; // 设置全局连线属性
+
+    subfrm [label = "<S00> D0 🔽 \n k0 = 4 |
+                     <S01> S1 🔄 \n k0 = 6 |
+                     <S02> U2 🔺 \n M = 1  |
+                     <S03> U3 🔺 \n M = 0  |
+                     <S04> U4 🔺 \n M = 1  |
+                     <S05> D5 🔽 \n k0 = 4 |
+                     <S06> S6 🔄 \n k0 = 6 |
+                     <S07> U7 🔺 \n M = 1  |
+                     <S08> U8 🔺 \n M = 0  |
+                     <S09> U9 🔺 \n M = 1  |
+                     <S10> D0 🔽 \n k0 = 4 |
+                     <S11> S1 🔄 \n k0 = 6 |
+                     <S12> U2 🔺 \n M = 1  |
+                     <S13> U3 🔺 \n M = 0  |
+                     <S14> U4 🔺 \n M = 1  |
+                     <S15> D5 🔽 \n k0 = 4 |
+                     <S16> S6 🔄 \n k 0=6  |
+                     <S17> U7 🔺 \n M = 1  |
+                     <S18> U8 🔺 \n M = 0  |
+                     <S19> U9 🔺 \n M = 1  ";];      
+    
+    subfrm:S10:s -> subfrm:S14:s [xlabel = "n-k0"; color = blue; fontcolor = blue;];
+    subfrm:S11:n -> subfrm:S17:n [xlabel = "n-k0"; color = red; fontcolor = red;];
+    subfrm:S15:s -> subfrm:S19:s [xlabel = "n-k0"; color = green; fontcolor = green;];
+    subfrm:S06:n -> subfrm:S12:n [xlabel = "n-k0"; color = orange; fontcolor = orange;];
+}
