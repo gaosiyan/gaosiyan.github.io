@@ -12,9 +12,3 @@ TddFrameConfig = [
     "DSUUUDSUUD",  # 配比 6
 ]
 
-
-
-
-dot = graphviz.Digraph(comment="The Round Table")
-
-print(dot.source)
