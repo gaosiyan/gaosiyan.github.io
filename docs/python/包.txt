@@ -1,5 +1,5 @@
 pip install graphviz
 
-graphviz 是官方的Python绑定安装后不用再次安装二进制库
+graphviz 是官方的Python绑定 需要将 dot 加入路径中
 
 pip install dot2tex
