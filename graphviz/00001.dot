@@ -4,26 +4,26 @@ digraph structs {
     node [fontname = "Microsoft YaHei"; fontsize=20; shape = record;]; // 设置全局节点属性
     edge [fontname = "Microsoft YaHei"; fontsize=20; minlen = 2; style = "solid"; arrowsize = 0.8;]; // 设置全局连线属性
 
-    subfrm [label = "<S00>D0 🔽\nm=0\nk0 = 4|
-                     <S01>S1 🔄\nm=0\nk0 = 6|
-                     <S02>U2 🔺\nM = 1\n\{6\}|
-                     <S03>U3 🔺\nM = 0\n\{ \}|
-                     <S04>U4 🔺\nM = 1\n\{4\}|
-                     <S05>D5 🔽\nm=0\nk0 = 4|
-                     <S06>S6 🔄\nm=0\nk0 = 6|
-                     <S07>U7 🔺\nM = 1\n\{6\}|
-                     <S08>U8 🔺\nM = 0\n\{ \}|
-                     <S09>U9 🔺\nM = 1\n\{4\}|
-                     <S10>D0 🔽\nm=0\nk0 = 4|
-                     <S11>S1 🔄\nm=0\nk0 = 6|
-                     <S12>U2 🔺\nM = 1\n\{6\}|
-                     <S13>U3 🔺\nM = 0\n\{ \}|
-                     <S14>U4 🔺\nM = 1\n\{4\}|
-                     <S15>D5 🔽\nm=0\nk0 = 4|
-                     <S16>S6 🔄\nm=0\nk0=6|
-                     <S17>U7 🔺\nM = 1\n\{6\}|
-                     <S18>U8 🔺\nM = 0\n\{ \}|
-                     <S19>U9 🔺\nM = 1\n\{4\}";];      
+    subfrm [label = "<S00>D0 🔽\nm=0\nk0 = 4\nn = 4|
+                     <S01>S1 🔄\nm=0\nk0 = 6\nn = 7|
+                     <S02>U2 🔺\nM = 1\nK = \{6\}\n\{S6\}|
+                     <S03>U3 🔺\nM = 0\nK = \{ \}\n\{ \}|
+                     <S04>U4 🔺\nM = 1\nK = \{4\}\n\{D0\}|
+                     <S05>D5 🔽\nm=0\nk0 = 4\nn = 9|
+                     <S06>S6 🔄\nm=0\nk0 = 6\nn = 2|
+                     <S07>U7 🔺\nM = 1\nK = \{6\}\n\{S1\}|
+                     <S08>U8 🔺\nM = 0\nK = \{ \}\n\{ \}|
+                     <S09>U9 🔺\nM = 1\nK = \{4\}\n\{D5\}|
+                     <S10>D0 🔽\nm=0\nk0 = 4\nn = 4|
+                     <S11>S1 🔄\nm=0\nk0 = 6\nn = 7|
+                     <S12>U2 🔺\nM = 1\nK = \{6\}\n\{S6\}|
+                     <S13>U3 🔺\nM = 0\nK = \{ \}\n\{ \}|
+                     <S14>U4 🔺\nM = 1\nK = \{4\}\n\{D0\}|
+                     <S15>D5 🔽\nm=0\nk0 = 4\nn = 9|
+                     <S16>S6 🔄\nm=0\nk0 = 6\nn = 2|
+                     <S17>U7 🔺\nM = 1\nK = \{6\}\n\{S1\}|
+                     <S18>U8 🔺\nM = 0\nK = \{ \}\n\{ \}|
+                     <S19>U9 🔺\nM = 1\nK = \{4\}\n\{D5\}";];      
     
     subfrm:S10:s -> subfrm:S14:s [xlabel = "n-k0"; color = blue; fontcolor = blue;];
     subfrm:S11:n -> subfrm:S17:n [xlabel = "n-k0"; color = red; fontcolor = red;];
