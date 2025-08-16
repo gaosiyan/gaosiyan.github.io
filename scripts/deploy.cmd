@@ -13,6 +13,6 @@ call ∏Ò ΩªØ.cmd
 cd /d  "%SCRIPT_DIR%" 
 cd ..
 
-git add . && git commit -m "%commit_msg%" && git push -u origin master && npm run deploy
+git add . && git commit -m "%commit_msg%" && git push --force -u origin master && npm run deploy
 
 cd /d  "%INIT_DIR%"
