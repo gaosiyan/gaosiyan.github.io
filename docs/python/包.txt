@@ -1,4 +1,4 @@
-conda install -c conda-forge graphviz
+pip install graphviz
 
 graphviz 是官方的Python绑定安装后不用再次安装二进制库
 
