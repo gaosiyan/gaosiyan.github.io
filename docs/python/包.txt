@@ -1,0 +1,5 @@
+conda install -c conda-forge graphviz
+
+graphviz 是官方的Python绑定安装后不用再次安装二进制库
+
+pip install dot2tex
