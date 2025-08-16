@@ -1,4 +1,6 @@
 
+
+
 # 36.211 Table 4.2-2
 TddFrameConfig = [
     "DSUUUDSUUU",  # 配比 0
@@ -10,9 +12,3 @@ TddFrameConfig = [
     "DSUUUDSUUD",  # 配比 6
 ]
 
-
-
-
-dot = graphviz.Digraph(comment="The Round Table")
-
-print(dot.source)
