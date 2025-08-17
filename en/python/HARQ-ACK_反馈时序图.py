@@ -86,12 +86,6 @@ def calc_subfrm_info(tdd_config: int, subfrm: int):
 
 
 def create_tdd_diagram(tdd_config: int):
-    dot = Digraph(f"TDD_CONFIG{tdd_config}", format="svg")
-    dot.attr(rankdir="TB")  # 从左到右布局
-
-    # 设置全局属性
-    dot.attr("node", fontname="Microsoft YaHei", fontsize="20", shape="record")
-    dot.attr("edge", fontname="Microsoft YaHei", fontsize="20", minlen="2", style="solid", arrowsize="0.8", penwidth="2")
 
     subfrm_info_list = []
     for subfrm in range(10):
@@ -99,49 +93,47 @@ def create_tdd_diagram(tdd_config: int):
 
     label = ""
 
-    for frame in range(2):
-        for subfrm in range(10):
+    for index in range(9, 30):
+        subfrm = index % 10
+        subfrm_info = subfrm_info_list[subfrm]
+        subfrm_type = subfrm_info["subfrm_type"]
+        symbol = subfrm_info["symbol"]
 
-            subfrm_info = subfrm_info_list[subfrm]
+        first_line = f"<S{index}> {subfrm_type}{subfrm} {symbol}"  # <S0> D0
 
-            subfrm_type = subfrm_info["subfrm_type"]
-            symbol = subfrm_info["symbol"]
+        if subfrm_type == "U":
+            K = subfrm_info["K"]
+            M = subfrm_info["M"]
+            pdsch_subfrm_set = subfrm_info["pdsch_subfrm_set"]
+            second_line = f"M = {M}"
+            third_line = f"K = {K}"
+            fourth_line = f"{pdsch_subfrm_set}"
+        else:
+            n = subfrm_info["n"]
+            K = subfrm_info_list[n]["K"]
+            m = subfrm_info["m"]
+            second_line = f"m = {m}"
+            third_line = f"k_{m} = {K[m]}"
+            fourth_line = f"{n}"
 
-            first_line = f"<S{subfrm+frame*10}> {subfrm_type}{subfrm} {symbol}"  # <S0> D0
+        if index == 29:
+            separator = ""
+        else:
+            separator = "|"
 
-            if subfrm_type == "U":
-                K = subfrm_info["K"]
-                M = subfrm_info["M"]
-                pdsch_subfrm_set = subfrm_info["pdsch_subfrm_set"]
-                second_line = f"M = {M}"
-                third_line = f"K = {K}"
-                fourth_line = f"{pdsch_subfrm_set}"
-            else:
-                n = subfrm_info["n"]
-                K = subfrm_info_list[n]["K"]
-                m = subfrm_info["m"]
-                second_line = f"m = {m}"
-                third_line = f"k_{m} = {K[m]}"
-                fourth_line = f"{n}"
+        first_line = first_line.strip() + "\\n"
+        second_line = second_line.strip() + "\\n"
+        third_line = third_line.strip() + "\\n"
+        fourth_line = fourth_line.strip() + separator
 
-            if subfrm + frame * 10 == 19:
-                separator = ""
-            else:
-                separator = "|"
+        label = label + first_line + second_line + third_line + fourth_line
 
-            first_line = first_line.strip() + "\\n"
-            second_line = second_line.strip() + "\\n"
-            third_line = third_line.strip() + "\\n"
-            fourth_line = fourth_line.strip() + separator
-
-            label = label + first_line + second_line + third_line + fourth_line
-
-    dot = Digraph("TDD_HARQ_Example", format="svg")
+    dot = Digraph(f"TDD_CONFIG{tdd_config}", format="svg")
     dot.attr(rankdir="TB")  # 从左到右布局
 
     # 设置全局属性
     dot.attr("node", fontname="Microsoft YaHei", fontsize="20", shape="record")
-    dot.attr("edge", fontname="Microsoft YaHei", fontsize="20", minlen="0", arrowsize="0.8", penwidth="2")
+    dot.attr("edge", fontname="Microsoft YaHei", fontsize="20", minlen="2", style="solid", arrowsize="0.8", penwidth="2")
 
     dot.node("subfrm", label=label)
 
@@ -151,12 +143,10 @@ def create_tdd_diagram(tdd_config: int):
     for subfrm in range(10):
         subfrm_info = subfrm_info_list[subfrm]
         if subfrm_info["subfrm_type"] == "U":
-            end_point = f"subfrm:S{subfrm+10}:n"
-            for pdsch_subfrm in subfrm_info["pdsch_subfrm_set"]:
-                if pdsch_subfrm > subfrm:
-                    start_point = f"subfrm:S{pdsch_subfrm}:n"
-                else:
-                    start_point = f"subfrm:S{pdsch_subfrm+10}:n"
+            end_point = f"subfrm:S{subfrm+20}:n"
+            for k in subfrm_info["K"]:
+                pdsch_frame = subfrm + 20 - k
+                start_point = f"subfrm:S{pdsch_frame}:n"
                 dot.edge(start_point, end_point, style=line_style, color=COLOR[color_index % len(COLOR)])
 
             if color_index % 1 == 0:
@@ -166,7 +156,7 @@ def create_tdd_diagram(tdd_config: int):
 
             color_index = color_index + 1
 
-    # print(dot.source)
+    print(dot.source)
     output_filename = os.path.join(os.path.dirname(os.path.abspath(__file__)), f"{tdd_config}")
     dot.render(filename=output_filename, cleanup=True, format="svg")
 
