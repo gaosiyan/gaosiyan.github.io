@@ -21,6 +21,53 @@ import Figure, { FigureRef } from "@site/src/components/custom/Figure";
   width="100%"
 />
 
+#### 7.3.2.1 相同帧配比的 TDD HARQ-ACK 上报流程(未完成)
+
+#### 7.3.2.2 不同帧配比的 TDD HARQ-ACK 上报流程(未完成)
+
+对于一个配置的服务小区,在本子条款的后续部分中的 DL-reference UL/DL configuration 在子条款 10.2 中定义.
+
+对于一个配置的服务小区,如果其 DL-reference UL/DL configuration 为 0,则 DCI format 1/1A/1B/1D/2/2A/2B/2C/2D 中的 DAI(下行分配索引)不被使用.
+
+:::tip
+
+这句话不是专门针对 CA 或者说 FDD+TDD CA 而言的,而是针对所有 TDD,因为配比 0 一个上行子帧最多反馈一个下行子帧,所以 DAI 没有什么意义.
+
+:::
+
+对于服务小区 $c$, UE 在应当在子帧 $n$ 反馈子帧 $n-k$ 其中($k\in K_c$) 检测到的 PDSCH 或指示下行 SPS 释放(定义于子条款 9.2)的 PDCCH/EPDCCH HARQ-ACK.
+其中集合 $K_c$ 包含所有满足以下条件的 $k \in K$,子帧 $n-k$ 对应于服务小区 $c$ 的一个下行子帧或特殊子帧.此处的服务小区$c$的下行子帧或特殊子帧的判定依据为:若 UE 已为该服务小区$c$配置了高层参数
+`EIMTA-MainConfigServCell-r12`,则依据高层参数 `EIMTA-MainConfigServCell-r12` 进行确定; $K$ 在表 10.1.3.1-1 中定义(该表中的 UL/DL configuration 对于应该出的 DL-reference UL/DL configuration)与子帧 $n$ 相关联.
+$M_c$ 是服务小区 $c$ 中与子帧 $n$ 相关联的集合 $K_c$  中的元素个数.
+
+在本子条款的后续部分中,$K=K_c$.
+
+如果 UE 为 PCC 配置了参数 `EIMTA-MainConfigServCell-r12` ,则本子条款后续部分中的 "PCC 的 UL/DL configuration 就代表 PCC 的 DL-reference UL/DL configuration.
+:::tip
+这里先不纠结,从协议上理解无论是否配置 `EIMTA-MainConfigServCell-r12`PCC 的 UL/DL configuration 和 PCC 的 DL-reference UL/DL configuration 是相等的.
+:::
+
+当配置了 PUCCH format 3 用于传输 HARQ-ACK 时,对于服务小区中具有正常下行 CP 的特殊子帧配置 0 和 5,或具有扩展下行 CP 的特殊子帧配置 0 和 4(见 36.211 表 4.2-1),该服务小区的特殊子帧不计入 HARQ-ACK 码本大小的确定.在这种情况下,如果服务小区是主小区,则该特殊子帧中没有指示下行 SPS 释放的 PDCCH/EPDCCH.
+:::tip
+在上面描述的几种场景种,由于特殊子帧 DwPTS 部分很短,不发送 PDSCH,所以也不存在对应 PDSCH 的反馈,另外规定在这些特殊子帧的 PDCCH 上也不能发送用于 SPS 释放的 PDCCH,所以这些子帧上就不存在 HARQ-ACK 反馈.
+:::
+
+如果服务小区的 UL-reference UL/DL configuration(定义于第 8.0 节)属于\{1,2,3,4,5,6\} 则 $W_{DAI}^{UL}$ 值由与服务小区上 PUSCH 相对应的 DCI format 0/4 中的下行分配索引(DAI)根据表 7.3-Z 在子帧 $n-k'$ 中确定,
+其中 $k'$ 定义于表 7.3-Y,且表 7.3-Y 中的 TDD UL/DL Configuration 指的是该服务小区的 UL-reference UL/DL configuration(定义于子条款 8.0).
+在没有 PDSCH 传输,也没有指示下行 SPS 资源释放的 PDCCH/EPDCCH 发送给 UE 的情况下,UE 可以预期如果 DCI format 0/4 被发送,则其中的 DAI 值会将被设置为 4.
+
+:::tip
+为什么是 \{1,2,3,4,5,6\} 剔除了配比 0 我理解是 $W_{DAI}^{UL}$ 没有啥参考意义,但是为什么没有剔除 \{6\}, 它和 0 一样都是一对一的反馈.
+没有开启上行 CA 并且支持跨载波调度的情况下服务小区的 UL-reference UL/DL configuration 就是自身的 UL/DL configuration.
+:::
+
+如果 DL-reference UL/DL configuration 属于\{1,2,3,4,5,6\},则 DCI format 1/1A/1B/1D/2/2A/2B/2C/2D 中的 DAI 值表示在每个配置的服务小区的子帧 $n-k$ 其中$k \in k$ 内,
+直至当前子帧为止,带有分配 PDSCH 传输的 PDCCH/EPDCCH 以及指示下行 SPS 释放的 PDCCH/EPDCCH 的累积数量,并且该值应逐子帧更新.将 $V_{DAI,c}^DL$ 表示为 UE 在服务小区 $C$ 的子帧 $n-k_m$ 中根据表 7.3-X 
+检测到的带有 DCI format 1/1A/1B/1D/2/2A/2B/2C/2D 的 PDCCH/EPDCCH 中的 DAI 值,其中 $k_m$ 是集合 $KK 中的最小值,使得 UE 在该子帧检测到一个 DCI 格式 1/1A/1B/1D/2/2A/2B/2C/2D.
+:::tip
+$V_{DAI,c}^DL$ 中不包含 SPS 的 PDSCH,即不包含无 PDCCH 的 PDSCH.
+:::
+
 ### 7.3.3 主小区帧结构类型 1 的 FDD-TDD HARQ-ACK 上报流程 (未完成)
 ### 7.3.4 主小区帧结构类型 2 的 FDD-TDD HARQ-ACK 上报流程
 

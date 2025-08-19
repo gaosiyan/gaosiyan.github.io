@@ -3,6 +3,7 @@ sidebar_position: 1
 sidebar_label: "协议理解"
 ---
 import Figure, { FigureRef } from "@site/src/components/custom/Figure";
+import { useLayoutEffect } from 'react';
 
 # HARQ-ACK 反馈时序
 
@@ -63,4 +64,29 @@ import Figure, { FigureRef } from "@site/src/components/custom/Figure";
   src="/img/content/326918ac004cdff835119904e91b49f4f259f20c.svg"
   title="配比 6 HARQ-ACK 反馈时序"
   width="100%"
-/>
+/>
+
+# FDD-TDD CA 相关
+
+FDD-TDD CA 即 FDD 和 TDD 混合组 CA ,并且 PCC 是 TDD 的场景,首先要将 SCC 中的 FDD 小区(时序)上转换成 TDD 时序,原因如下:
+
+1. 所有服务小区的 HARQ-ACK 反馈都在 PCC 进行,这就要找到 TDD (以及不同配比 TDD)和 FDD 组 CA 的兼容参考配比,即协议中的 DL-reference UL/DL configuration,这里与是否跨载波调度无关,因为无论是否跨载波调度 HARQ-ACK 反馈都要在 PCC 进行反馈;
+2. 对于上行 CA 场景 PUSCH 和 PHICH 的反馈也存在定时,如果支持跨载波调度,就需要考虑上行时序兼容,即协议中的 UL-reference UL/DL configuration;
+3. 关于 FDD-TDD 组 CA 并且 PCC 是 TDD 时 DL-reference UL/DL configuration 计算汇总如下:
+    - PCC TDD 的 DL-reference UL/DL configuration = 当前服务小区的 UL/DL configuration;
+    - FDD SCC 的 DL-reference UL/DL configuration = PCC 的 DL-reference UL/DL configuration = 主 CC 的 UL/DL configuration;
+    - TDD SCC 的 DL-reference UL/DL configuration 要转换成和 PCC 兼容的时序,即和 PCC 的 UL/DL configuration 不同时才需要特殊考虑,具体见 36.213 10.2 节.
+4. 关于 FDD-TDD 组 CA 并且 PCC 是 TDD 时 UL-reference UL/DL configuration 计算汇总如下:
+    - 只有在上行 CA 使能并且在跨载波调度的场景下 UL-reference UL/DL configuration 才需要特殊考虑,否则 UL-reference UL/DL configuration = 当前服务小区的 UL/DL configuration.
+
+关于 "36.213 7.3.4 主小区帧结构类型 2 的 FDD-TDD HARQ-ACK 上报流程" 的理解
+
+针对 FDD-TDD 组 CA 并且 PCC 是 TDD 时的场景,将 FDD 时序上转换成 TDD 后然后用 DL-reference UL/DL configuration 和 UL-reference UL/DL configuration 将这个 FDD 服务小区当成 TDD 小区,纳入 "36.213 7.3.2.2
+不同帧配比的 TDD HARQ-ACK 上报流程"来处理.其中有六个自然段,描述了转换时的特殊情况:
+
+- 第一条无需解释;
+- 第二条 DL-reference UL/DL configuration 属于 \{2,3,4\},需要映射到 DL-reference UL/DL configuration 为 \{5\} 再带入 7.3.2.2.没有写否则,即否则带入用的 DL-reference UL/DL configuration 就是上面的规则.
+- 第三条是针对 eimta 时域调整后的 PUSCH,UL-reference UL/DL configuration UE 应该怎么假设,这里不考虑 eimta,即 UL-reference UL/DL configuration 就等于当前 FDD SCC 的 UL/DL configuration;
+- 第四条是也是关于 UL-reference UL/DL configuration 的非配比 5 无需特殊考虑;
+- 第五条 $W_{DAI}^{UL}$ 的获取规则,没有什么特殊的地方;
+- 第六条关于 HARQ-ACK 码本排列的,没有啥特殊的地方;
