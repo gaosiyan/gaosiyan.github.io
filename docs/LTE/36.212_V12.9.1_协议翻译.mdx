@@ -3,4 +3,108 @@ sidebar_position: 3
 sidebar_label: "36.212 V12.9.1 协议翻译"
 ---
 
-import Figure, { FigureRef } from "@site/src/components/custom/Figure";
+import Figure, { FigureRef } from "@site/src/components/custom/Figure";
+
+# 5 信道编码复用和交织(未完成)
+
+## 5.2 上行传输信道与控制信息(未完成)
+
+### 5.2.1 上行随机接入信道(未完成)
+
+### 5.2.2 上行共享信道(未完成)
+
+<Figure
+  src="/img/content/cc627e76ae57c1f21d7b7f448da33013aa719f80.png"  
+  title="36.212 Figure 5.2.2-1 UL-SCH TB 处理流程"
+/>
+
+#### 5.2.2.1(未完成)
+#### 5.2.2.2(未完成)
+#### 5.2.2.3(未完成)
+#### 5.2.2.4(未完成)
+#### 5.2.2.5(未完成)
+#### 5.2.2.6 控制信息的信道编码(未完成)
+
+控制数据以信道质量信息(CQI 和[或] PMI),HARQ-ACK 以及秩指示(Rank Indication)的形式送达编码单元.通过为控制信息的传输分配不同数量的编码符号,来实现不同的编码速率.当控制数据在物理上行共享信道(PUSCH)中传输时,HARQ-ACK,秩指示以及信道质量信息 $o_0, o_1, o_2, ..., o_{O-1}$ 的信道编码是独立进行的.
+
+:::note
+上面的 $o_0, o_1, o_2, ..., o_{O-1}$ 比特流是 UCI 比特流的统称.
+:::
+
+对于配置了 TDD 主小区的情况,HARQ-ACK 比特数的确定方法遵循 36.213 第 7.3 节的规定.
+
+:::note
+TDD 非 CA 小区,或者 TDD CA,以及 FDD-TDD CA 小区并且 PCC 是 TDD 的情况都参考 36.213 第 7.3.
+:::
+
+当 UE 发送 HARQ-ACK 比特或 RI 比特时,它应按下述方式确定用于 HARQ-ACK 或 RI 的每层编码调制符号数 $Q'$.
+
+对于在承载 HARQ-ACK 比特或 RI 比特的 PUSCH 中仅一个 TB 的情况:
+
+:::note
+指上行 PUSCH 单 TB 即非 SUMIMO.
+:::
+
+$
+Q' = min(\left \lceil \frac{O \cdot M_{SC}^{PUSCH-inital} \cdot N_{symb}^{PUSCH-inital} \cdot \beta _{offset}^{PUSCH} }{\sum_{r=0}^{C-1}K_r}\right \rceil,4 \cdot M_{SC}^{PUSCH})
+$
+
+其中:
+- $O$ 是 HARQ-ACK 或 RI 的比特数;
+- $M_{SC}^{PUSCH}$ 是当前子帧中为 TB 调度的 PUSCH 传输带宽,以子载波数量表示,参见 36.211;
+:::note
+$M_{SC}^{PUSCH} = Number Of RB \cdot 12$
+:::
+
+- $N_{symb}^{PUSCH-inital}$ 是指同一传输块在初始 PUSCH 传输(新传)时每子帧的 SC-FDMA 符号数,其计算公式为:$N_{symb}^{PUSCH-inital} = (2\cdot(N_{symb}^{UL}-1)-N_{SRS})$.其中:
+    - $N_{symb}^{UL}$ 是每个 Slot 的上行符号,在 Normal CP 时为 7, Extended CP 时为 6,减 1 是去除导频符号;
+    - 在以下情况 $N_{SRS} = 1$:
+        - 若配置了一个上行链路小区的 UE 被设置为在同一子帧内发送初始传输的 PUSCH 和 SRS;
+        - 若 UE 在同一服务小区的同一子帧内发送初始传输的 PUSCH 和 SRS;
+        - 若初始传输的 PUSCH 资源分配与 36.211 章节 5.5.3 中定义的小区特定 SRS 子帧和带宽配置存在部分重叠;
+        - 若同一服务小区中的初始传输子帧是 36.213 章节 8.2 中定义的 UE 特定 1 类 SRS 子帧;
+        - 若同一服务小区中的初始传输子帧是[3]章节 8.2 中定义的 UE 特定 0 类 SRS 子帧,且 UE 配置了多个时间提前组(TAG).
+    - 否则 $N_{SRS} = 0$.
+- $M_{SC}^{PUSCH-initial},C,K_r$ 的值从同一传输块的初始 PDCCH 或 EPDCCH 中获取.如果同一传输块没有使用 DCI format 0 的初始 PDCCH 或 EPDCCH,则$M_{SC}^{PUSCH-initial},C,K_r$ 的值应通过以下方式确定:
+    - 来自最新的半持续调度(Semi-Persistent Scheduling, SPS)指派 PDCCH 或 EPDCCH(当该传输块的初始 PUSCH 传输是半持续调度的);
+    - 来自同一传输块的随机接入响应授权(Random Access Response Grant)(当 PUSCH 是由随机接入响应授权发起的).
+
+对于在承载 HARQ-ACK 比特或 RI 比特的 PUSCH 有两个 TB 的情况:
+:::note
+PUSCH SUMIMO 的情况暂略.
+:::
+
+:::note
+上面描述的 $Q'$ 即 HARQ-ACK 比特或 RI 比特占用的调制符号,即 RE 个数,最大占该 UE 带宽的 4 个 SC-OFDM 符号.
+:::
+
+对于 HARQ-ACK,$Q_{ACK} = Q_m \cdot Q'$,且 $\beta _{offset}^{PUSCH} = \beta _{offset}^{HARQ-ACK}$,其中 $Q_m$为对应 TB 的调制阶数\{2,4,6\}.$\beta _{offset}^{HARQ-ACK}$应根据 36.213 的规定,依据相应 PUSCH 传输的 TB 数量确定.
+
+对于 RI,$Q_{RI} = Q_m \cdot Q'$,且 $\beta _{offset}^{PUSCH} = \beta _{offset}^{RI}$,其中 $Q_m$为对应 TB 的调制阶数\{2,4,6\}.$\beta _{offset}^{RI}$应根据 36.213 的规定,依据相应 PUSCH 传输的 TB 数量确定,当高层为该小区配置了两个上行功率控制子帧集时,还需根据相应 PUSCH 的上行功率控制子帧集确定.
+
+对于 HARQ-ACK:
+- 每个肯定确认(ACK)编码为二进制'1',每个否定确认(NACK)编码为二进制'0';
+- 如果 HARQ-ACK 反馈包含 1 比特信息,即$[o_0^{ACK}]$,则首先按照 Table 5.2.2.6-1 <FigureRef id="36.212 Table 5.2.2.6-1 1-bit HARQ-ACK 的编码" /> 进行编码;
+- 如果 HARQ-ACK 反馈包含 2 比特信息,即$[o_0^{ACK},o_1^{ACK}]$,其中$o_0^{ACK}$对应 codeword 0 的 HARQ-ACK 比特,$o_1^{ACK}$对应 codeword 1 的 HARQ-ACK 比特,,或者由于高层为 UE 配置的两个 DL 小区的 HARQ-ACK 比特聚合而形成 2 比特信息,或者对于 TDD 对应两个子帧的 2 比特信息,则首先按照表 5.2.2.6-2 <FigureRef id="36.212 Table 5.2.2.6-2 2-bit HARQ-ACK 的编码" />进行编码,其中$o_2^{ACK} = (o_0^{ACK}+o_1^{ACK})\;mod\;2$.
+
+<Figure
+  src="/img/content/8bfafedd1b2b9072eee3603836e1e2a4f1e70739.png"  
+  title="36.212 Table 5.2.2.6-1 1-bit HARQ-ACK 的编码"
+/>
+
+<Figure
+  src="/img/content/ea6fee0c37ff0155236e1f17eb6b9a944dadfe1b.png"  
+  title="36.212 Table 5.2.2.6-2 2-bit HARQ-ACK 的编码"
+/>
+
+- 如果 HARQ-ACK 反馈信息由于高层为 UE 配置的一个或多个下行小区所对应的 HARQ-ACK 比特聚合而形成 $3 \leq O^{ACK} \leq 11$ 比特(即 $o_0^{ACK} o_1^{ACK}, ..., o_{O^{ACK}-1}^{ACK}$),则通过将比特序列 $o_0^{ACK} o_1^{ACK}, ..., o_{O^{ACK}-1}^{ACK}$ 作为输入,送入第 5.2.2.6.4 节所述的信道编码块,得到一个编码比特序列 $\tilde{q}_0^{ACK} \tilde{q}_1^{ACK}, ..., \tilde{q}_{31}^{ACK}$.进而,通过对序列 $\tilde{q}_0^{ACK} \tilde{q}_1^{ACK}, ..., \tilde{q}_{31}^{ACK}$ 进行循环重复,获得比特序列 $q_0^{ACK}, q_1^{ACK}, q_2^{ACK}, ..., q_{Q_{ACK}-1}^{ACK}$,使得总比特序列长度等于 $Q_{ACK}$.
+
+- 如果 HARQ-ACK 反馈信息由于高层为 UE 配置的一个或多个下行小区所对应的 HARQ-ACK 比特聚合而形成 $11 < O^{ACK} \leq 21$ 比特(即 $o_0^{ACK} o_1^{ACK}, ..., o_{O^{ACK}-1}^{ACK}$),则通过将比特序列 $o_0^{ACK} o_1^{ACK}, ..., o_{O^{ACK}-1}^{ACK}$ 作为输入,送入第 5.2.2.6.5 节所述的信道编码块,得到编码比特序列 $q_0^{ACK}, q_1^{ACK}, q_2^{ACK}, ..., q_{Q_{ACK}-1}^{ACK}$.
+
+:::note
+$Q_{ACK}$ 即 HARQ-ACK 软信息的长度,所占的 RE 个数乘以调制阶数.
+:::
+
+表 5.2.2.6-1 <FigureRef id="36.212 Table 5.2.2.6-1 1-bit HARQ-ACK 的编码" />和 5.2.2.6-2 <FigureRef id="36.212 Table 5.2.2.6-2 2-bit HARQ-ACK 的编码" />中的 "x" 和 "y" 是占位符,用于文献 36.212 中以最大化承载 HARQ-ACK 信息的调制符号的欧几里得距离的方式对 HARQ-ACK 比特进行加扰.
+
+对于 FDD 或 TDD HARQ-ACK multiplexing,或者当一个或多个下行小区的聚合中至少包含一个使用 FDD 的小区和一个使用 TDD 的小区且 HARQ-ACK 信息由 1 或 2 比特组成时,比特序列 $q_0^{ACK}, q_1^{ACK}, q_2^{ACK}, \ldots, q_{Q_{ACK}-1}^{ACK}$ 是通过多个编码后的 HARQ-ACK 块的串联获得的,其中 $Q_{ACK}$ 是所有编码 HARQ-ACK 块的编码比特总数.最后一个编码 HARQ-ACK 块的串联可以是部分的,以使总比特序列长度等于 $Q_{ACK}$.

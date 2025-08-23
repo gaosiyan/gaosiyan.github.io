@@ -5,6 +5,87 @@ sidebar_label: "UE 上报 HARQ-ACK 的流程"
 
 import Figure, { FigureRef } from "@site/src/components/custom/Figure";
 
+# HARQ-ACK Bit 序列的生成
+## FDD 非 CA 场景 HARQ-ACK Bit 序列的生成
+### 在 PUSCH 信道上反馈时的生成过程
+HARQ-ACK Bit 序列被标记为 $o_0^{ACK}, o_1^{ACK}, o_2^{ACK}, ..., o_{O^{ACK}-1}^{ACK}$. 
+
+其中:
+- 序列中的每一个元素(1 个 bit)代表一个 codeword 的 HARQ-ACK 结果;
+- 1 表示 ACK, 0 表示 NACK;
+- $O^{ACK}$ 表示序列的长度,对于支持双流的 TM 模式\{1,2,5,7,6\},$O^{ACK} = 2$(即使这些 TM 模式强制调度单流,$O^{ACK}$ 也是 2,两个 Bit 传输相同的 ACK/NACK 信息),否则 $O^{ACK} = 1$;
+- $o_0^{ACK}$ 对应 codeword 0,$o_1^{ACK}$ 对应 codeword 1.
+
+:::warning
+codeword 和 TB 一般情况下是一一对应的,到但是 DCI2 系列中有交换字段.
+:::
+
+### 在 PUCCH 信道上反馈时的生成过程
+
+同上.
+
+## TDD 非 CA 场景 HARQ-ACK Bit 序列的生成
+### 在 PUSCH 信道上反馈时的生成过程
+在 TDD 非 CA 场景下 HARQ 反馈可以配置为 HARQ-ACK bundling 或 HARQ-ACK multiplexing.
+
+HARQ-ACK bundling 如下 <FigureRef id="HARQ-ACK bundling" /> 所示:
+
+<Figure
+  src="/img/content/a886d3d96ce6af6c7ddf70175e1b8e6a7acd773a.png"  
+  title="HARQ-ACK bundling"
+/>
+
+一个反馈窗内的所有子帧的对应 codeword 时域与操作,最多生成 2 个 bit:
+- $o_0^{ACK}$ 对应当前反馈窗内的所有下行子帧 codeword 0 的 ACK/NACK 结果;
+- $o_1^{ACK}$ 对应当前反馈窗内的所有下行子帧 codeword 1 的 ACK/NACK 结果;
+- 对于支持双流的 TM 模式\{1,2,5,7,6\},生成 2 bit,如果强制调度了单 TB,则没有调度的 TB 生成 NACK;
+- 对于支持单流的 TM 模式,生成 1 bit.
+
+HARQ-ACK multiplexing 如下 <FigureRef id="HARQ-ACK multiplexing" /> 所示:
+
+<Figure
+  src="/img/content/465be7142cb362ee75ddf21033468ff4c7ae6e31.png"  
+  title="HARQ-ACK multiplexing"
+/>
+
+一个反馈窗内的同一个子帧两个 codeword 空域与操作,最多 4 个 bit:
+- 配比 5 不支持配置 HARQ-ACK multiplexing 因为配比 5,子帧 2 要反馈 9 个子帧,需要 9 个 bit,而 HARQ-ACK multiplexing 最多反馈 4 个 bit;
+- 当前配比对应上行子帧的 $M = 1$ 回退成 HARQ bundling;
+- 对于支持双流的 TM 模式\{1,2,5,7,6\},如果强制调度了单 TB,则没有调度的 TB 生成 ACK;
+- $o_0^{ACK} = V_{DAI}^{UL}$,即反馈窗内实际调度的 PDSCH 子帧数,因为 DCI 0/4 中的 $V_{DAI}^{UL}$ 是最全的包含有 PDCCH 的 PDSCH (SPS 周期上的 PDSCH,不含 PDCCh)和无 PDSCH 的 PDCCH (用于 DL SPS 释放的 PDCCH 不含 PDSCH)所有计数;
+    - $o_0^{ACK}$ 代表反馈窗内第一个调度子帧,即 $V_{DAI}^{DL} = 1$ 的子帧,即根据 $V_{DAI}^{DL}$ 排序;
+    - 如果有 SPS 周期上的 PDSCH,该子帧的 ACK/NACK 放在最后一个 bit,因为它没有 DCI 所以不存在 $V_{DAI}^{DL}$ 字段.
+
+### 在 PUCCH 信道上反馈时的生成过程
+基本过程和 PUSCH 类似,有两点重要区别:
+1. HARQ-ACK bundling 时对于支持双流的 TM 模式\{1,2,5,7,6\},生成 2 bit,如果强制调度了单 TB,则没有调度的 TB 生成 DTX(PUSCH 是 NACK);
+2. HARQ-ACK multiplexing 时 $o_0^{ACK} = M$ 即按照反馈窗长松排,没有调度的子帧生成 DTX.
+
+## FDD CA 场景 HARQ-ACK Bit 序列的生成
+### 在 PUSCH 信道上反馈时的生成过程
+
+HARQ-ACK Bit 序列被标记为 $o_{c,0}^{ACK}, o_{c,1}^{ACK}, o_{c,2}^{ACK}, ..., o_{c,O^{ACK}-1}^{ACK}$. 
+
+其中:
+- $c$ 是载波索引,PCC 的载波索引固定为 0;
+
+### 在 PUCCH 信道上反馈时的生成过程
+
+## TDD CA 场景 HARQ-ACK Bit 序列的生成
+### 在 PUSCH 信道上反馈时的生成过程
+
+### 在 PUCCH 信道上反馈时的生成过程
+
+## FDD-TDD 且 PCC 为 FDD 场景 HARQ-ACK Bit 序列的生成
+### 在 PUSCH 信道上反馈时的生成过程
+
+### 在 PUCCH 信道上反馈时的生成过程
+
+## FDD-TDD 且 PCC 为 TDD 场景 HARQ-ACK Bit 序列的生成
+### 在 PUSCH 信道上反馈时的生成过程
+
+### 在 PUCCH 信道上反馈时的生成过程
+
 :::tip
 
 本节内容主要参考 Release 12 系列协议,具体章节如下:

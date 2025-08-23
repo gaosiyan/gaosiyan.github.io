@@ -62,10 +62,10 @@ $M_c$ 是服务小区 $c$ 中与子帧 $n$ 相关联的集合 $K_c$  中的元�
 :::
 
 如果 DL-reference UL/DL configuration 属于\{1,2,3,4,5,6\},则 DCI format 1/1A/1B/1D/2/2A/2B/2C/2D 中的 DAI 值表示在每个配置的服务小区的子帧 $n-k$ 其中$k \in k$ 内,
-直至当前子帧为止,带有分配 PDSCH 传输的 PDCCH/EPDCCH 以及指示下行 SPS 释放的 PDCCH/EPDCCH 的累积数量,并且该值应逐子帧更新.将 $V_{DAI,c}^DL$ 表示为 UE 在服务小区 $C$ 的子帧 $n-k_m$ 中根据表 7.3-X 
+直至当前子帧为止,带有分配 PDSCH 传输的 PDCCH/EPDCCH 以及指示下行 SPS 释放的 PDCCH/EPDCCH 的累积数量,并且该值应逐子帧更新.将 $V_{DAI,c}^{DL}$ 表示为 UE 在服务小区 $C$ 的子帧 $n-k_m$ 中根据表 7.3-X 
 检测到的带有 DCI format 1/1A/1B/1D/2/2A/2B/2C/2D 的 PDCCH/EPDCCH 中的 DAI 值,其中 $k_m$ 是集合 $KK 中的最小值,使得 UE 在该子帧检测到一个 DCI 格式 1/1A/1B/1D/2/2A/2B/2C/2D.
 :::tip
-$V_{DAI,c}^DL$ 中不包含 SPS 的 PDSCH,即不包含无 PDCCH 的 PDSCH.
+$V_{DAI,c}^{DL}$ 中不包含 SPS 的 PDSCH,即不包含无 PDCCH 的 PDSCH.
 :::
 
 ### 7.3.3 主小区帧结构类型 1 的 FDD-TDD HARQ-ACK 上报流程 (未完成)
