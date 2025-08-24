@@ -63,7 +63,7 @@ $M_{SC}^{PUSCH} = Number Of RB \cdot 12$
         - 若 UE 在同一服务小区的同一子帧内发送初始传输的 PUSCH 和 SRS;
         - 若初始传输的 PUSCH 资源分配与 36.211 章节 5.5.3 中定义的小区特定 SRS 子帧和带宽配置存在部分重叠;
         - 若同一服务小区中的初始传输子帧是 36.213 章节 8.2 中定义的 UE 特定 1 类 SRS 子帧;
-        - 若同一服务小区中的初始传输子帧是[3]章节 8.2 中定义的 UE 特定 0 类 SRS 子帧,且 UE 配置了多个时间提前组(TAG).
+        - 若同一服务小区中的初始传输子帧是 36.213 章节 8.2 中定义的 UE 特定 0 类 SRS 子帧,且 UE 配置了多个时间提前组(TAG).
     - 否则 $N_{SRS} = 0$.
 - $M_{SC}^{PUSCH-initial},C,K_r$ 的值从同一传输块的初始 PDCCH 或 EPDCCH 中获取.如果同一传输块没有使用 DCI format 0 的初始 PDCCH 或 EPDCCH,则$M_{SC}^{PUSCH-initial},C,K_r$ 的值应通过以下方式确定:
     - 来自最新的半持续调度(Semi-Persistent Scheduling, SPS)指派 PDCCH 或 EPDCCH(当该传输块的初始 PUSCH 传输是半持续调度的);
@@ -105,6 +105,46 @@ PUSCH SUMIMO 的情况暂略.
 $Q_{ACK}$ 即 HARQ-ACK 软信息的长度,所占的 RE 个数乘以调制阶数.
 :::
 
-表 5.2.2.6-1 <FigureRef id="36.212 Table 5.2.2.6-1 1-bit HARQ-ACK 的编码" />和 5.2.2.6-2 <FigureRef id="36.212 Table 5.2.2.6-2 2-bit HARQ-ACK 的编码" />中的 "x" 和 "y" 是占位符,用于文献 36.212 中以最大化承载 HARQ-ACK 信息的调制符号的欧几里得距离的方式对 HARQ-ACK 比特进行加扰.
+表 5.2.2.6-1 <FigureRef id="36.212 Table 5.2.2.6-1 1-bit HARQ-ACK 的编码" />和 5.2.2.6-2 <FigureRef id="36.212 Table 5.2.2.6-2 2-bit HARQ-ACK 的编码" />中的 "x" 和 "y" 是占位符,用于文献 36.211 中以最大化承载 HARQ-ACK 信息的调制符号的欧几里得距离的方式对 HARQ-ACK 比特进行加扰.
 
-对于 FDD 或 TDD HARQ-ACK multiplexing,或者当一个或多个下行小区的聚合中至少包含一个使用 FDD 的小区和一个使用 TDD 的小区且 HARQ-ACK 信息由 1 或 2 比特组成时,比特序列 $q_0^{ACK}, q_1^{ACK}, q_2^{ACK}, \ldots, q_{Q_{ACK}-1}^{ACK}$ 是通过多个编码后的 HARQ-ACK 块的串联获得的,其中 $Q_{ACK}$ 是所有编码 HARQ-ACK 块的编码比特总数.最后一个编码 HARQ-ACK 块的串联可以是部分的,以使总比特序列长度等于 $Q_{ACK}$.
+对于 FDD 或 TDD HARQ-ACK multiplexing,或者当一个或多个下行小区的聚合中至少包含一个使用 FDD 的小区和一个使用 TDD 的小区且 HARQ-ACK 信息由 1 或 2 比特组成时,比特序列 $q_0^{ACK}, q_1^{ACK}, q_2^{ACK}, \ldots, q_{Q_{ACK}-1}^{ACK}$ 是通过多个编码后的 HARQ-ACK 块的串联获得的,其中 $Q_{ACK}$ 是所有编码 HARQ-ACK 块的编码比特总数.最后一个编码 HARQ-ACK 块的串联可以是部分的,以使总比特序列长度等于 $Q_{ACK}$.
+
+对于 FDD,当 HARQ-ACK 由于多个 DL 小区的聚合而包含 2 比特或更多信息时,比特序列 $o[0], o[1], ..., o[O^{ACK}-1]$ 是通过以下伪代码所述方式将多个 DL 小区的 HARQ-ACK 比特进行串联拼接而成的:
+
+```python
+c = 0 # [0,cell_index] 区间循环,较低索引对应较低 RRC 配置索引的小区
+j = 0 # HARQ-ACK bit index
+N_cells_DL = higher_layers_configured_for_the_UE # 高层为该 UE 配置的下行激活载波数 $N_{cells}^{DL}$,,即载波索引 c in [0,$N_{cells}^{DL}-1],且 PCC c = 0
+
+while c < N_cells_DL:
+    if transmission_mode in [1,2,5,6,7]: # 当前载波的传输模式不支持空分复用时
+        o_ACK[c][j] = HARQ_ACK_bit_of_this_cell # o_ACK[c][j] 即 $o_{c,j}^{ACK}$
+        j = j + 1
+    else:                                # 当前载波的传输模式支持空分复用时
+        o_ACK[c][j] = HARQ_ACK_bit_of_this_cell_first_codeword   # 低 bit 关联到第一个 codeword
+        j = j + 1
+        o_ACK[c][j] = HARQ_ACK_bit_of_this_cell_second_codeword   # 高 bit 关联到第二个 codeword
+        j = j + 1
+    c = c + 1
+```
+
+对于包含一个使用 FDD 的主小区及至少一个使用 TDD 的辅小区的多个 DL 小区的聚合,比特序列 $ o_0^{ACK} o_1^{ACK}, ..., o_{O_{ACK}-1}^{ACK} $ 是一个或多个 DL 小区的 HARQ-ACK 比特级联后的结果.定义 $ N_{cells}^{DL} $ 为高层为 UE 配置的小区数量,并定义 $ B_c^{DL} $ 为 UE 需要在 UL 子帧 n 中为第$c$个服务小区反馈 HARQ-ACK 比特的子帧数.对于使用 TDD 的小区,如果 UE 配置了高层参数 `eimta-HARQ-ReferenceConfig`,则子帧由 `DL-reference UL/DL configuration`决定,否则由` UL/DL configuration`配置决定.对于使用 TDD 的小区,如果该小区中的子帧 $n-4$ 是下行子帧,或者是具有特殊子帧配置 1/2/3/4/6/7/8/9(常规下行 CP)或特殊子帧配置 1/2/3/5/6/7(扩展下行 CP)的特殊子帧,则 $ B_c^{DL} = 1 $,否则 $ B_c^{DL} = 0 $.对于使用 FDD 的小区,$ B_c^{DL} = 1 $.
+
+比特序列 $ o_0^{ACK} o_1^{ACK},...,o_{O^{ACK}-1}^{ACK} $ 按照以下伪代码生成:
+
+```python
+c = 0 # [0,cell_index] 区间循环,较低索引对应较低 RRC 配置索引的小区
+j = 0 # HARQ-ACK bit index
+
+while c < N_cells_DL:
+    if B_DL[c] == 1:  # 对应 c 小区的 B_c^{DL},即反馈窗内单子帧的情况
+        if transmission_mode in [1,2,5,6,7]: # 当前载波的传输模式不支持空分复用时
+            o_ACK[c][j] = HARQ_ACK_bit_of_this_cell # o_ACK[c][j] 即 $o_{c,j}^{ACK}$
+            j = j + 1
+        else:                                # 当前载波的传输模式支持空分复用时
+            o_ACK[c][j] = HARQ_ACK_bit_of_this_cell_first_codeword   # 低 bit 关联到第一个 codeword
+            j = j + 1
+            o_ACK[c][j] = HARQ_ACK_bit_of_this_cell_second_codeword   # 高 bit 关联到第二个 codeword
+            j = j + 1       
+
+```
