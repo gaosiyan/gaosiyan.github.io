@@ -145,6 +145,10 @@ while c < N_cells_DL:
             o_ACK[c][j] = HARQ_ACK_bit_of_this_cell_first_codeword   # 低 bit 关联到第一个 codeword
             j = j + 1
             o_ACK[c][j] = HARQ_ACK_bit_of_this_cell_second_codeword   # 高 bit 关联到第二个 codeword
-            j = j + 1       
+            j = j + 1
+    c = c+1       
 
-```
+```
+:::note
+这种情况下 $ B_c^{DL}$ 只能为 0 或 1? 研究一下 eimta,以及 eimta-HARQ-ReferenceConfig 配置
+:::
