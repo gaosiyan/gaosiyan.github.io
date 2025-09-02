@@ -138,9 +138,9 @@ while c < N_cells_DL:
 
 :::
 
-对于包含一个使用 FDD 的主小区及至少一个使用 TDD 的辅小区的多个 DL 小区的聚合,比特序列 $ o_0^{ACK} o_1^{ACK}, ..., o_{O_{ACK}-1}^{ACK} $ 是一个或多个 DL 小区的 HARQ-ACK 比特级联后的结果.定义 $ N_{cells}^{DL} $ 为高层为 UE 配置的小区数量,并定义 $ B_c^{DL}$ 为 UE 需要在 UL 子帧 n 中为第$c$个服务小区反馈 HARQ-ACK 比特的子帧数.对于使用 TDD 的小区,如果 UE 配置了高层参数 `eimta-HARQ-ReferenceConfig`,则子帧由  `DL-reference UL/DL configuration` 决定,否则由 `UL/DL configuration` 配置决定.对于使用 TDD 的小区,如果该小区中的子帧 $n-4$ 是下行子帧,或者是具有特殊子帧配置 1/2/3/4/6/7/8/9(常规下行 CP)或特殊子帧配置 1/2/3/5/6/7(扩展下行 CP)的特殊子帧,则 $ B_c^{DL} = 1 $,否则 $ B_c^{DL} = 0 $.对于使用 FDD 的小区,$ B_c^{DL} = 1 $.
+对于包含一个使用 FDD 的主小区及至少一个使用 TDD 的辅小区的多个 DL 小区的聚合,比特序列 $ o_0^{ACK} o_1^{ACK}, ..., o_{O_{ACK}-1}^{ACK} $ 是一个或多个 DL 小区的 HARQ-ACK 比特级联后的结果.定义 $ N_{cells}^{DL} $ 为高层为 UE 配置的小区数量,并定义 $ B_c^{DL}$ 为 UE 需要在 UL 子帧 n 中为第$c$个服务小区反馈 HARQ-ACK 比特的子帧数.对于使用 TDD 的小区,如果 UE 配置了高层参数 `eimta-HARQ-ReferenceConfig`,则子帧由  `DL-reference UL/DL configuration` 决定,否则由 `UL/DL configuration` 配置决定.对于使用 TDD 的小区,如果该小区中的子帧 $n-4$ 是下行子帧,或者是具有特殊子帧配置 1/2/3/4/6/7/8/9(常规下行 CP)或特殊子帧配置 1/2/3/5/6/7(扩展下行 CP)的特殊子帧,则 $B_c^{DL} = 1$,否则 $B_c^{DL} = 0$.对于使用 FDD 的小区,$B_c^{DL} = 1$.
 
-比特序列 $ o_0^{ACK} o_1^{ACK},...,o_{O^{ACK}-1}^{ACK} $ 按照以下伪代码生成:
+比特序列 $o_0^{ACK} o_1^{ACK},...,o_{O^{ACK}-1}^{ACK}$ 按照以下伪代码生成:
 
 ```python
 c = 0 # [0,cell_index] 区间循环,较低索引对应较低 RRC 配置索引的小区
@@ -156,9 +156,80 @@ while c < N_cells_DL:
             j = j + 1
             o_ACK[c][j] = HARQ_ACK_bit_of_this_cell_second_codeword  # 高 bit 关联到第二个 codeword
             j = j + 1
-    c = c+1       
+    c = c + 1       
 
 ```
 :::note
 eIMTA 是 R12 中引入的,该功能可以在预设值的几个 TDD 帧配比中利用 DCI 进行快速的切换.可以简单理解为 LTE 中的灵活帧配比.一般情况下不会配置.
-:::
+:::
+
+对于配置了 TDD 主小区,且 HARQ-ACK 针对一个或多个下行载波聚合,同时 UE 配置了 PUCCH format 3 的情况, 比特序列 $o_0^{ACK} o_1^{ACK},...,o_{O^{ACK}-1}^{ACK}$ 是通过连接高层配置的一个或多个下行载波及多个子帧的 HARQ-ACK 比特而形成的,具体定义见 36.213.
+$N_{cells}^{DL}$ 为高层为 UE 配置的小区数量,$B_c^{DL}$为 UE 需要反馈 HARQ-ACK 比特的子帧数量,其定义参见 36.213 第 7.3 节.
+
+如果 UE 配置了 PUCCH format 3,其需要传送的 HARQ-ACK 比特数量按以下方式计算:
+
+```python
+k = 0 # HARQ-ACK bit index
+c = 0 # [0,cell_index] 区间循环,较低索引对应较低 RRC 配置索引的小区
+
+while c < N_cells_DL:
+    l = 0
+    while l < B_DL[c]:  # 反馈子帧循环
+        if transmission_mode in [1,2,5,6,7]: # 当前载波的传输模式不支持空分复用时
+            k = k + 1
+        else:
+            k = k + 2
+        l = l + 1
+    c = c + 1
+```
+:::note
+上面描述的场景主要是计算 $k$,代表实际原始的 ACK bit 数目, 按照 TM 模式计算而不是实际调度的 TB,每个 TB 一个 Bit.
+:::
+
+如果当 UE 所有配置服务小区均使用 TDD 时且 $k \le 20$,或当至少一个配置服务小区使用 FDD 且主小区为 TDD 且 $k \le 21$ 时,则 HARQ-ACK 比特的复用按以下伪代码执行:
+
+```python
+c = 0 # [0,cell_index] 区间循环,较低索引对应较低 RRC 配置索引的小区
+j = 0 # HARQ-ACK bit index
+
+while c < N_cells_DL:
+    l = 0
+    while l < B_DL[c]:  # 反馈子帧循环
+        if transmission_mode in [1,2,5,6,7]: # 当前载波的传输模式不支持空分复用时
+            o_ACK[j] = o_ACK[c][l] #   \tilde{o}_j^{ACK} = o_{c,j}^{ACK}
+            j = j + 1
+        else:
+            o_ACK[j],o_ACK[j+1] = o_ACK[c][2l],o_ACK[c][2l+1]
+            j = j + 2
+        l = l + 1
+    c = c + 1
+```
+:::note
+上面描述的场景是用 $o_{c,j}^{ACK}$ (伪码中的 `o_ACK[c][l]`)得到 $\tilde{o}_j^{ACK}$ (伪码中的 `o_ACK[j]`),转换前后没有进行压缩即没有 spatial bundling 操作,转换前后是一一对应的关系.
+:::
+
+如果当 UE 所有配置服务小区均使用 TDD 时且 $k > 20$,或者当至少一个配置服务小区使用 FDD 且主小区为 TDD 时且 $k > 21$,则对所有小区中的所有子帧应用空间绑定(spatial bundling),并按下述伪代码进行 HARQ-ACK 比特的复用:
+
+```python
+c = 0 # [0,cell_index] 区间循环,较低索引对应较低 RRC 配置索引的小区
+j = 0 # HARQ-ACK bit index
+
+while c < N_cells_DL:
+    l = 0
+    while l < B_DL[c]:  # 反馈子帧循环
+        if transmission_mode in [1,2,5,6,7]: # 当前载波的传输模式不支持空分复用时
+            o_ACK[j] = o_ACK[c][l] #   \tilde{o}_j^{ACK} = o_{c,j}^{ACK}
+            j = j + 1
+        else:
+            o_ACK[j] = o_ACK[c][l] #   这里的 o_ACK[c][l] 对该小区第一个和第二个码字所对应的 HARQ-ACK 比特进行如 36.213 第 7.3 节所定义的二进制与操作
+            j = j + 1
+        l = l + 1
+    c = c + 1
+```
+
+若 $o^{ACK} \leq 11$,则通过设置 $o_i^{ACK} = \tilde{o}_i^{ACK}$ 来获得比特序列 $o_0^{ACK}, o_1^{ACK}, ...,o_{o^{ACK}-1}^{ACK}$.
+若 $ 11 < o^{ACK} \leq 21$,则按以下方式获得比特序列  $o_0^{ACK}, o_1^{ACK}, ..., o_{o^{ACK}-1}^{ACK}$,若 $ i $ 为偶数,则设置 $ o_{\lfloor i/2 \rfloor}^{ACK} = \tilde{o}_i^{ACK} $;若 $i $ 为奇数,则设置 $ o_{\lfloor o^{ACK}/2 \rfloor + \lfloor (i-1)/2 \rfloor}^{ACK} = \tilde{o}_i^{ACK} $.
+
+对于 TDD 主小区,且 HARQ-ACK 用于两个下行载波的聚合,同时 UE 配置了采用信道选择的 PUCCH format 1b 的情况,则按照 36.213 第 7.3 节所述方式获得比特序列 $ o_0^{ACK}, o_1^{ACK}, ..., o_{o^{ACK}-1}^{ACK}$.
+
+For TDD HARQ-ACK bundling, a bit sequence...
