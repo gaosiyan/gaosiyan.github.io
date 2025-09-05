@@ -11,9 +11,36 @@ import Figure, { FigureRef } from "@site/src/components/custom/Figure";
  
 ## 7.2 UE 上报信道状态信息(CSI)的处理流程 (未完成)
 
-## 7.3 UE 反馈 HARQ-ACK 的处理流程 (未完成)
+## 7.3 UE 上报 HARQ-ACK 的处理流程 (未完成)
 
-### 7.3.1 FDD HARQ-ACK 上报流程 (未完成)
+如果为 UE 配置的每个服务小区均具有帧结构类型 1,则帧结构类型 1 UE 上报 HARQ-ACK 的流程在子条款 7.3.1 中给出.
+
+如果为 UE 配置的每个服务小区均具有帧结构类型 2,则帧结构类型 2 UE 上报 HARQ-ACK 的流程在子条款 7.3.2 中给出.
+
+如果为 UE 配置了多个服务小区,且任意两个配置的服务小区的帧结构类型不同,并且主小区为帧结构类型 1,则 HARQ-ACK 上报的 UE 流程在子条款 7.3.3 中给出.
+
+如果为 UE 配置了多个服务小区,且任意两个配置的服务小区的帧结构类型不同,并且主小区为帧结构类型 2,则 HARQ-ACK 上报的 UE 流程在子条款 7.3.4 中给出.
+
+### 7.3.1 FDD HARQ-ACK 上报流程
+
+对于采用 PUCCH format 1a/1b 传输的 FDD,当 HARQ-ACK 和 SR 在同一子帧中传输时,UE 应在负 SR 传输时在其分配的 HARQ-ACK PUCCH format 1a/1b 资源上传输 HARQ-ACK,并在正 SR 传输时在其分配的 SR PUCCH 资源上传输 HARQ-ACK.
+
+对于采用带信道选择的 PUCCH format 1b 的 FDD,当 HARQ-ACK 和 SR 在同一子帧中传输时,UE 应在负 SR 传输时在其分配的带信道选择的 HARQ-ACK PUCCH 资源上(如子条款 10.1.2.2.1 所定义)传输 HARQ-ACK,并在正 SR 传输时在其分配的 SR PUCCH 资源上为每个服务小区传输一个 HARQ-ACK 比特,具体如下:
+
+- 如果在一个服务小区上仅检测到一个 TB 或一个指示下行 SPS 释放的 PDCCH/EPDCCH,则该服务小区的 HARQ-ACK 比特是对应于该传输块或指示下行 SPS 释放的 PDCCH/EPDCCH 的 HARQ-ACK 比特;
+
+- 如果在一个服务小区上接收到两个 TB,则该服务小区的 HARQ-ACK 比特是通过对对应于传输块的 HARQ-ACK 比特进行空间捆绑生成的;
+
+- 如果对于一个服务小区,既未检测到需要提供 HARQ-ACK 响应的 PDSCH 传输,也未检测到指示下行 SPS 释放的 PDCCH/EPDCCH,则该服务小区的 HARQ-ACK 比特设置为 NACK;
+
+且主小区和辅小区的 HARQ-ACK 比特分别映射到 $b(0)$ 和 $b(1)$,其中 $b(0)$ 和 $b(1)$ 在 36.211 的子条款 5.4.1 中规定.
+
+对于 FDD,当 HARQ-ACK 的 PUCCH format 3 传输与高层为 UE 配置的用于传输调度请求的子帧重合时,UE 应按照[4]的子条款 5.2.3.1 中的定义在 HARQ-ACK PUCCH 资源上复用 HARQ-ACK 和 SR 比特,除非 HARQ-ACK 对应于仅在主细胞上的 PDSCH 传输或仅在主细胞上指示下行 SPS 释放的 PDCCH/EPDCCH,在这种情况下,SR 应按照采用 PUCCH 格式 1a/1b 的 FDD 方式进行传输.
+
+对于 FDD 和 PUSCH 传输,如果 UE 在子帧 $ n-4 $ 中没有接收到 PDSCH 或指示下行 SPS 释放的 PDCCH,则 UE 不应在子帧 $ n $ 的 PUSCH 上传输 HARQ-ACK.
+
+当仅传输正 SR 时,UE 应使用[3]的子条款 5.4.1 中定义的 SR 资源的 PUCCH 格式 1.
+
 ### 7.3.2 TDD HARQ-ACK 上报流程 (未完成)
 <Figure
   src="/img/content/98bc3b4a309dde8ced3af871b0a26109353d48e5.png"  

@@ -1,9 +1,32 @@
 ---
 sidebar_position: 8
-sidebar_label: "UE 上报 HARQ-ACK 的流程"
+sidebar_label: "UE 上报 HARQ-ACK 的流程汇总"
 ---
 
 import Figure, { FigureRef } from "@site/src/components/custom/Figure";
+
+# UE 上报 HARQ-ACK 的流程汇总
+根据场景非为一下几张场景
+
+1. FDD 非 CA 场景;
+2. TDD 非 CA HARQ-ACK bundling 场景;
+3. TDD 非 CA HARQ-ACK multiplexing 场景;
+4. FDD CA 场景;
+5. TDD CA 场景;
+6. FDD-TDD CA 且 PCC 为 FDD 的场景;
+7. FDD-TDD CA 且 PCC 为 TDD 的场景.
+
+后文将分别针对上面描述的 7 种场景中的具体细节展开描述,具体包括:
+- HARQ-ACK Bit 序列(即码本) $o_0^{ACK}, o_1^{ACK}, o_2^{ACK}, ..., o_{O^{ACK}-1}^{ACK}$ 的生成,以及和\[载波\] codeword 的对应关系;
+- PUCCH 资源的计算;
+- PUCCH 资源冲突判决;
+- PUSCH 信道编码.
+
+:::tip
+HARQ-ACK Bit 序列(即码本) $o_0^{ACK}, o_1^{ACK}, o_2^{ACK}, ..., o_{O^{ACK}-1}^{ACK}$ 是一个二进制逻辑序列,即抽象的与具体实现无关的序列.
+序列中的每个 bit 1 表示 ACK, 0 表示 NACK.逻辑序列中的 MSB(最高有效位),即这里的 $o_0^{ACK}$ 是编码器或者各种处理读取的的第一个 bit.一定要和具体实现的物理序列区分开;
+
+:::
 
 # HARQ-ACK Bit 序列的生成
 ## FDD 非 CA 场景 HARQ-ACK Bit 序列的生成
