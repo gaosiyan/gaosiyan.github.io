@@ -35,11 +35,11 @@ import Figure, { FigureRef } from "@site/src/components/custom/Figure";
 
 且主小区和辅小区的 HARQ-ACK 比特分别映射到 $b(0)$ 和 $b(1)$,其中 $b(0)$ 和 $b(1)$ 在 36.211 的子条款 5.4.1 中规定.
 
-对于 FDD,当 HARQ-ACK 的 PUCCH format 3 传输与高层为 UE 配置的用于传输调度请求的子帧重合时,UE 应按照[4]的子条款 5.2.3.1 中的定义在 HARQ-ACK PUCCH 资源上复用 HARQ-ACK 和 SR 比特,除非 HARQ-ACK 对应于仅在主细胞上的 PDSCH 传输或仅在主细胞上指示下行 SPS 释放的 PDCCH/EPDCCH,在这种情况下,SR 应按照采用 PUCCH 格式 1a/1b 的 FDD 方式进行传输.
+对于 FDD,当 HARQ-ACK 的 PUCCH format 3 传输与高层为 UE 配置的用于传输调度请求的子帧重合时,UE 应按照 36.212 的子条款 5.2.3.1 中的定义在 HARQ-ACK PUCCH 资源上复用 HARQ-ACK 和 SR 比特,除非 HARQ-ACK 对应于仅在 PCC 上的 PDSCH 传输或仅在 PCC 上指示下行 SPS 释放的 PDCCH/EPDCCH,在这种情况下,SR 应按照采用 PUCCH format 1a/1b 的 FDD 方式进行传输.
 
 对于 FDD 和 PUSCH 传输,如果 UE 在子帧 $ n-4 $ 中没有接收到 PDSCH 或指示下行 SPS 释放的 PDCCH,则 UE 不应在子帧 $ n $ 的 PUSCH 上传输 HARQ-ACK.
 
-当仅传输正 SR 时,UE 应使用[3]的子条款 5.4.1 中定义的 SR 资源的 PUCCH 格式 1.
+当仅传输正 SR 时,UE 应使用 36.211 的子条款 5.4.1 中定义的 SR 资源的 PUCCH format 1.
 
 ### 7.3.2 TDD HARQ-ACK 上报流程 (未完成)
 <Figure

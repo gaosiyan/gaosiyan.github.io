@@ -22,11 +22,49 @@ import Figure, { FigureRef } from "@site/src/components/custom/Figure";
 - PUCCH 资源冲突判决;
 - PUSCH 信道编码.
 
-:::tip
+:::warning
 HARQ-ACK Bit 序列(即码本) $o_0^{ACK}, o_1^{ACK}, o_2^{ACK}, ..., o_{O^{ACK}-1}^{ACK}$ 是一个二进制逻辑序列,即抽象的与具体实现无关的序列.
 序列中的每个 bit 1 表示 ACK, 0 表示 NACK.逻辑序列中的 MSB(最高有效位),即这里的 $o_0^{ACK}$ 是编码器或者各种处理读取的的第一个 bit.一定要和具体实现的物理序列区分开;
 
+codeword 和 TB 一般情况下是一一对应的,到但是 DCI2 系列中有交换字段.
 :::
+
+## FDD 非 CA 场景
+
+### HARQ-ACK Bit 序列生成
+
+在 PUSCH 或 PUCCH 信道传输时,$b(0)$代表 codeword 0, $b(1)$代表 codeword 1. FDD 非 CA 场景 bit 数由实际调度的 TB 个数确定,而不是由 TM 模式静态的决定的(这里的协议出处).
+
+### PUCCH 资源的确定
+
+- 在 SR 周期和正 SR 冲突时使用 SR 的 PUCCH 资源发送 SR + HARQ-ACK(36.213 7.3.1);
+- 否则使用 HARQ-ACK PUCCH 资源发送.
+
+## TDD 非 CA HARQ-ACK bundling 场景
+
+## TDD 非 CA HARQ-ACK multiplexing 场景
+
+## FDD CA 场景
+
+### HARQ-ACK Bit 序列生成
+待补充
+
+### PUCCH 资源的确定
+
+- 在 SR 周期和正 SR 冲突时:
+  - 当配置了 format 1bcs 时使用 SR 的 PUCCH 资源发送 SR + HARQ-ACK,并且为每个载波生成 1 bit 的 HARQ-ACK 信息.由于 format 1bcs 最多支持两个载波:
+    - $b(0)$ 代表 PCC,$b(1)$ 代表 SCC.当对应的载波调度单个 TB 时,则$b(x)$ 对应实际的 HARQ-ACK,调度双流时两个 bit 先进行与操作(spatially bundling)然后再赋值给$b(x)$;
+    - 如果对应的载波没有调度,则$b(x)$设置为 NACK.
+  - 当配置了 format 3 时,用 HARQ-ACK PUCCH 资源发送 SR + HARQ-ACK.
+- 否则使用 HARQ-ACK PUCCH 资源发送.
+
+## TDD CA 场景
+
+## FDD-TDD CA 且 PCC 为 FDD 的场景
+
+## FDD-TDD CA 且 PCC 为 TDD 的场景
+
+-----------------------------------------------------------------
 
 # HARQ-ACK Bit 序列的生成
 ## FDD 非 CA 场景 HARQ-ACK Bit 序列的生成
