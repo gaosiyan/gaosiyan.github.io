@@ -8,7 +8,7 @@ import Figure, { FigureRef } from "@site/src/components/custom/Figure";
 # 7 PDSCH 相关处理流程 (未完成)
 
 ## 7.1 UE 接收 PDSCH 的处理流程 (未完成)
- 
+
 ## 7.2 UE 上报信道状态信息(CSI)的处理流程 (未完成)
 
 ## 7.3 UE 上报 HARQ-ACK 的处理流程 (未完成)
@@ -35,20 +35,130 @@ import Figure, { FigureRef } from "@site/src/components/custom/Figure";
 
 且主小区和辅小区的 HARQ-ACK 比特分别映射到 $b(0)$ 和 $b(1)$,其中 $b(0)$ 和 $b(1)$ 在 36.211 的子条款 5.4.1 中规定.
 
-对于 FDD,当 HARQ-ACK 的 PUCCH format 3 传输与高层为 UE 配置的用于传输调度请求的子帧重合时,UE 应按照 36.212 的子条款 5.2.3.1 中的定义在 HARQ-ACK PUCCH 资源上复用 HARQ-ACK 和 SR 比特,除非 HARQ-ACK 对应于仅在 PCC 上的 PDSCH 传输或仅在 PCC 上指示下行 SPS 释放的 PDCCH/EPDCCH,在这种情况下,SR 应按照采用 PUCCH format 1a/1b 的 FDD 方式进行传输.
+对于 FDD,当 HARQ-ACK 的 PUCCH format 3 传输与高层为 UE 配置的用于传输 SR 的子帧重合时,UE 应按照 36.212 的子条款 5.2.3.1 中的定义在 HARQ-ACK PUCCH 资源上复用 HARQ-ACK 和 SR 比特,除非 HARQ-ACK 对应于仅在 PCC 上的 PDSCH 传输或仅在 PCC 上指示下行 SPS 释放的 PDCCH/EPDCCH,在这种情况下,SR 应按照采用 PUCCH format 1a/1b 的 FDD 方式进行传输.
 
 对于 FDD 和 PUSCH 传输,如果 UE 在子帧 $ n-4 $ 中没有接收到 PDSCH 或指示下行 SPS 释放的 PDCCH,则 UE 不应在子帧 $ n $ 的 PUSCH 上传输 HARQ-ACK.
 
 当仅传输正 SR 时,UE 应使用 36.211 的子条款 5.4.1 中定义的 SR 资源的 PUCCH format 1.
 
 ### 7.3.2 TDD HARQ-ACK 上报流程 (未完成)
+
+对于 TDD 以及未为任何服务小区配置参数 `EIMTA-MainConfigServCell-r12` 的 UE,如果该 UE 配置了一个服务小区,或者如果该 UE 配置了多个服务小区且所有配置的服务小区的 TDD 上下行配置相同,则用于上报 HARQ-ACK 的 UE 流程在子条款 7.3.2.1 中给出.
+
+对于 TDD,如果一个 UE 配置了多个服务小区并且至少两个配置的服务小区的 TDD 上下行配置不相同,或者如果该 UE 为至少一个服务小区配置了参数 `EIMTA-MainConfigServCell-r12`,则用于上报 HARQ-ACK 的 UE 流程在子条款 7.3.2.2 中给出.
+
+当仅传输正 SR 时,UE 应使用 36.211 中子条款 5.4.1 中定义的 SR 资源的 PUCCH format 1.
+
+#### 7.3.2.1 相同帧配比的 TDD HARQ-ACK 上报流程(未完成)
+
+对于 TDD,UE 应在检测到子帧 $ n - k $ 内(其中 $ k \in K $ 且 $K$ 在表 10.1.3.1-1<FigureRef id="36.213 Table 10.1.3.1-1" /> 中定义)针对该 UE 且需要提供 HARQ-ACK 响应的 PDSCH 传输或指示下行 SPS 释放(在子条款 9.2 中定义)的 PDCCH/EPDCCH 时,在 UL 子帧 $ n $ 中传输 HARQ-ACK 响应.
+
+对于 TDD,当配置了 PUCCH format 3 用于传输 HARQ-ACK 时,对于服务小区中采用正常下行 CP 的特殊子帧配置 0 和 5 或采用扩展下行 CP 的配置 0 和 4(见表 36.211 4.2-1),该服务小区的特殊子帧被排除在 HARQ-ACK 码本大小确定之外.在这种情况下,如果服务小区是主小区,则该特殊子帧中没有指示下行 SPS 释放的 PDCCH/EPDCCH.
+
+:::note
+正常下行 CP 的特殊子帧配置 0 和 5 或采用扩展下行 CP 的配置 0 和 4 下对应特殊子帧的 DwPTS 太短,不能用于发送 PDSCH, 并且规定 PDCCH 上也不能用于发送指示下行 SPS 释放的 PDCCH/EPDCCH,所以对应的码本中可以去除,注意只有 PCC 支持 SPS. 那么 format 1bcs 呢?
+:::
+
+对于 TDD 上下行配置 1-6 且配置了一个服务小区的情况,如果 UE 未配置 PUCCH format 3,则在子帧 $n - k'$ 中(其中 $k'$ 在表 7.3-Y 中定义<FigureRef id="36.213 Table 7.3-Y" />)由 UE 根据表 7.3-X <FigureRef id="36.213 Table 7.3-X" /> 检测到的 DCI format 0/4 中的下行分配索引 (DAI) 值 $V_{DAI}^{UL}$,表示在所有子帧 $ n - k $(其中 $k \in K$)内,具有 PDSCH 传输以及具有指示下行 SPS 释放的 PDCCH/EPDCCH 且针对相应 UE 的子帧总数.值 $V_{DAI}^{UL}$ 包括所有子帧 $n - k$ 内具有和不具有相应 PDCCH/EPDCCH 的所有 PDSCH 传输.如果既没有针对 UE 的 PDSCH 传输,也没有指示下行 SPS 资源释放的 PDCCH/EPDCCH,则 UE 可以预期,如果传输了 DCI format 0/4 中的 DAI 值 $V_{DAI}^{UL}$,则该值被设置为 4.
+
+:::note
+$V_{DAI}^{UL}$ 是最全的,由于是在 DCI format 0/4 上传输的,$n - k'$ 即对应 $n$ 的 DCI format 0/4 检测时间,所以肯定是 PUSCH 信道反馈,这里有两个条件没有说明:
+1. 上下行配置 0 呢? 最初的 Release 8 协议支持配置 0-6;
+2. 这里为什么强"调配置了一个服务小区 + 没有配置 PUCCH format3" 是否等价于非 CA 场景?
+:::
+
+-----------------------------审阅完成
+
+对于 TDD 上下行配置 1-6 且配置了多个服务小区的 UE,或者对于 TDD 上下行配置 1-6 且配置了一个服务小区和 PUCCH 格式 3 的 UE,一个值 $ W_{DAI}^{UL} $ 由子帧 $ n - k' $ 中(其中 $ k' $ 在表 7.3-Y 中定义)DCI 格式 0/4 中的下行分配索引 (DAI) 根据表 7.3-Z 确定.如果既没有针对 UE 的 PDSCH 传输,也没有指示下行 SPS 资源释放的 PDCCH/EPDCCH,则 UE 可以预期,如果传输了 DCI 格式 0/4 中的 DAI,则 $ W_{DAI}^{UL} $ 的值被设置为 4.
+
+对于 TDD 上下行配置 1-6,DCI 格式 1/1A/1B/1D/2/2A/2B/2C/2D 中的 DAI 值表示在每个配置的服务小区的子帧 $ n - k $(其中 $ k \in K $)内,直至当前子帧为止的,分配了 PDSCH 传输的 PDCCH/EPDCCH 以及指示下行 SPS 释放的 PDCCH/EPDCCH 的累积数量,并且应逐子帧更新.将 $ V_{DAI,c}^{DL} $ 表示为由 UE 在服务小区 $ c $ 的子帧 $ n - k_m $ 中根据表 7.3-X 检测到的,带有 DCI 格式 1/1A/1B/1D/2/2A/2B/2C/2D 的 PDCCH/EPDCCH 中的 DAI 值,其中 $ k_m $ 是集合 K(在表 10.1.3.1-1 中定义)中的最小值,使得 UE 检测到一个 DCI 格式 1/1A/1B/1D/2/2A/2B/2C/2D.当配置了一个服务小区时,$ V_{DAI,c}^{DL} $ 中的下标 $ c $ 可以省略.
+
+对于所有 TDD 上下行配置,将 $ U_{DAI,c} $ 表示为在服务小区 $ c $ 的子帧 $ n - k $(其中 $ k \in K $)内由 UE 检测到的,分配了 PDSCH 传输的 PDCCH/EPDCCH 以及指示下行 SPS 释放的 PDCCH/EPDCCH 的总数.当配置了一个服务小区时,$ U_{DAI,c} $ 中的下标 $ c $ 可以省略.将 $ N_{SPS} $(可以是 0 或 1)表示为在子帧 $ n - k $(其中 $ k \in K $)内没有相应 PDCCH/EPDCCH 的 PDSCH 传输的数量.
+
+对于 TDD HARQ-ACK 捆绑或 HARQ-ACK 复用以及 $ M = 1 $ 的子帧 $ n $,UE 应通过对所有相应的 $ U_{DAI} + N_{SPS} $ 个独立 PDSCH 传输 HARQ-ACK 以及为响应接收到的指示下行 SPS 释放的 PDCCH/EPDCCH 而发出的独立 ACK,在每个码字上跨与单个 UL 子帧相关联的 $ M $ 个下行的和特殊的子帧执行逻辑 AND 操作,来生成一个或两个 HARQ-ACK 比特,其中 $ M $ 是表 10.1.3.1-1 中定义的集合 $ K $ 中的元素数量.UE 应检测是否至少漏检了一个下行分配,并且对于 UE 在 PUSCH 上传输的情况,UE 还应确定参数 $ N_{\text{bundled}} $.
+
+-   对于 TDD 上下行配置 0,如果 UE 在子帧 $ n - k $(其中 $ k \in K $)内检测到具有或不具有相应 PDCCH/EPDCCH 的 PDSCH 传输,或检测到指示下行 SPS 释放的 PDCCH,则 $ N_{\text{bundled}} $ 应为 1.如果 UE 在子帧 $ n - k $(其中 $ k \in K $)内没有接收到 PDSCH 或指示下行 SPS 释放的 PDCCH,则 UE 不应在 PUSCH 上传输 HARQ-ACK.
+
+-   对于 UE 未在子帧 $ n $ 中的 PUSCH 上传输且 TDD 上下行配置为 1-6 的情况,如果
+    $ U_{DAI} > 0 \quad \text{and} \quad V_{DAI}^{DL} \neq (U_{DAI} - 1) \mod 4 + 1, $
+    则 UE 检测到至少漏检了一个下行分配.
+
+-   对于 UE 在 PUSCH 上传输且 PUSCH 传输是基于检测到的,针对该 UE 的带有 DCI 格式 0/4 的 PDCCH/EPDCCH 进行调整的情况,且 TDD 上下行配置为 1-6,如果
+    $ V_{DAI}^{UL} \neq (U_{DAI} + N_{SPS} - 1) \mod 4 + 1 $
+    则 UE 检测到至少漏检了一个下行分配,并且 UE 应为所有码字生成 NACK,其中
+    $ N_{\text{bundled}} $
+    由 UE 确定为
+    $ N_{\text{bundled}} = V_{DAI}^{UL} + 2. $
+    如果 UE 未检测到任何下行分配遗漏,
+    $ N_{\text{bundled}} $
+    由 UE 确定为
+    $ N_{\text{bundled}} = V_{DAI}^{UL}. $
+    如果
+    $ U_{DAI} + N_{SPS} = 0 \quad \text{and} \quad V_{DAI}^{UL} = 4 $
+    则 UE 不应传输 HARQ-ACK.
+
+-   对于 UE 在 PUSCH 上传输,且 PUSCH 传输不是基于检测到的,针对该 UE 的带有 DCI 格式 0/4 的 PDCCH/EPDCCH 的情况,且 TDD 上下行配置为 1-6,如果
+    $ U_{DAI} > 0 \quad \text{and} \quad V_{DAI}^{DL} \neq (U_{DAI} - 1) \mod 4 + 1, $
+    则 UE 检测到至少漏检了一个下行分配,并且 UE 应为所有码字生成 NACK.UE 确定
+    $ N_{\text{bundled}} = (U_{DAI} + N_{SPS}) $
+    作为已分配子帧的数量.如果
+    $ U_{DAI} + N_{SPS} = 0 $
+    则 UE 不应传输 HARQ-ACK.
+
+对于 TDD,当配置 PUCCH 格式 3 用于传输 HARQ-ACK 时,由 RRC 配置的第 c 个服务小区的 HARQ-ACK 反馈比特
+$ O_{c,0}^{ACK} O_{c,1}^{ACK}, \ldots, O_{c,O_{c}}^{ACK} O_{c,1}^{ACK} $
+按如下方式构造,其中 $ c \geq 0 $,
+$ O_{c}^{ACK} = B_{c}^{DL} $
+如果第 c 个服务小区中配置的传输模式支持一个传输块或应用了空间 HARQ-ACK 捆绑,否则
+$ O_{c}^{ACK} = 2B_{c}^{DL} $
+其中
+$ B_{c}^{DL} $
+是 UE 需要为第 c 个服务小区反馈 HARQ-ACK 比特的下行和特殊子帧的数量.
+
+-   对于 UE 在 PUCCH 上传输的情况,
+    $ B_{c}^{DL} = M $
+    其中
+    $ M $
+    是与子帧 $ n $ 相关联的集合 $ K $(在表 10.1.3.1-1 中定义)中的元素数量,并且集合 $ K $ 不包括具有正常下行 CP 的配置 0 和 5 或具有扩展下行 CP 的配置 0 和 4 的特殊子帧;否则
+    $ B_{c}^{DL} = M - 1. $
+
+-   对于 TDD 上下行配置 0 或对于未基于检测到的带有 DCI 格式 0/4 的 PDCCH/EPDCCH 进行调整的 PUSCH 传输,UE 应假设
+    $ B_{c}^{DL} = M $
+    其中
+    $ M $
+    是与子帧 $ n $ 相关联的集合 $ K $(在表 10.1.3.1-1 中定义)中的元素数量,并且集合 $ K $ 不包括具有正常下行 CP 的配置 0 和 5 或具有扩展下行 CP 的配置 0 和 4 的特殊子帧;否则
+    $ B_{c}^{DL} = M - 1. $
+    如果 UE 在子帧 $ n - k $(其中 $ k \in K $)内没有接收到 PDSCH 或指示下行 SPS 释放的 PDCCH/EPDCCH,则 UE 不应在 PUSCH 上传输 HARQ-ACK.
+
+-   对于 TDD 上下行配置 {1, 2, 3, 4, 6} 以及基于检测到的带有 DCI 格式 0/4 的 PDCCH/EPDCCH 进行调整的 PUSCH 传输,UE 应假设
+    $ B_{c}^{DL} = W_{DAI}^{UL}. $
+    如果 UE 在子帧 $ n - k $(其中 $ k \in K $)内没有接收到 PDSCH 或指示下行 SPS 释放的 PDCCH/EPDCCH 且 $ W_{DAI}^{UL} = 4 $,则 UE 不应在 PUSCH 上传输 HARQ-ACK.
+
+-   对于 TDD 上下行配置 5 以及基于检测到的带有 DCI 格式 $ 0/4 $ 的 PDCCH/EPDCCH 进行调整的 PUSCH 传输,UE 应假设
+    $ B_c^{DL} = W_{DAI}^{UL} + 4 \left[ \left( U - W_{DAI}^{UL} \right) / 4 \right], $
+    其中 $ U $ 表示所有配置的服务小区中 $ U_c $ 的最大值,$ U_c $ 是在第 $ c $ 个服务小区的子帧 $ n - k $($ k \in K $)内接收到的 PDSCH 和指示下行 SPS 释放的 PDCCH/EPDCCH 的总数.如果 UE 在子帧 $ n - k $(其中 $ k \in K $)内没有接收到 PDSCH 或指示下行 SPS 释放的 PDCCH/EPDCCH 且
+    $ W_{DAI}^{UL} = 4 $
+    则 UE 不应在 PUSCH 上传输 HARQ-ACK.
+
+对于 TDD,当配置 PUCCH 格式 3 用于传输 HARQ-ACK 时,
+
+<Figure
+  src="/img/content/80a50ddccd92eaa7e2193b42ade80af43c49eefd.png"  
+  title="36.213 Table 7.3-X"
+  width="100%"
+/>
+
+<Figure
+  src="/img/content/7959d846163762dcd2407666fd1745e2ec6dfcd6.png"  
+  title="36.213 Table 7.3-Y"
+  width="100%"
+/>
+
 <Figure
   src="/img/content/98bc3b4a309dde8ced3af871b0a26109353d48e5.png"  
   title="36.213 Table 7.3-Z"
   width="100%"
 />
-
-#### 7.3.2.1 相同帧配比的 TDD HARQ-ACK 上报流程(未完成)
 
 #### 7.3.2.2 不同帧配比的 TDD HARQ-ACK 上报流程(未完成)
 
@@ -113,14 +223,18 @@ FDD-TDD HARQ-ACK 反馈机制遵循条款 7.3.2.2 所述的 HARQ-ACK 流程,但�
 - 对于帧结构类型 1 的服务小区,当配置 PUCCH format 3 用于传输 HARQ-ACK 时,若服务小区的 DL-reference UL/DL configuration 为 0,则载波 $c$ 子帧 $n - k$ 中带对应 PDCCH/EPDCCH 的 PDSCH 传输的 HARQ-ACK 反馈,如果是单 TB TM 模式或应用 spatial HARQ-ACK bundling,关联到 $o_{c,2DAI(k)-1}^{ACK}$,否则关联到 $o_{c,2DAI(k)-2}^{ACK}$ 和 $o_{c,DAI(k)-1}^{ACK}$,其中 $DAI(k)$ 为子帧 $n - k$ 中检测到的 DCI 格式 1A/1B/1D/1/2/2A/2B/2C/2D 内的 DAI 值, $o_{c,2DAI(k)-2}^{ACK}$ 和 $o_{c,2DAI(k)-1}^{ACK}$ 分别为 TB 0 和 TB 1 的 HARQ-ACK 反馈.
 当 $N_{SPS} > 0$ 时,无对应 PDCCH/EPDCCH 的 PDSCH 传输的 HARQ-ACK 映射到 $o_{c,O_c^{ACK}-1}^{ACK}$.未检测到 PDSCH 传输的 HARQ-ACK 反馈比特设置为 NACK.
 
-<Figure
-  src="/img/content/5f8eb7b2fc73ceebb3e8ddfeafa629195c011c56.png"  
-  title="36.213 Table 10.1.3A-1"
-  width="100%"
-/>
+# 10 物理上行控制信道过程(未完成)
+## 10.1 用于确定物理上行控制信道分配的 UE 过程(未完成)
+### 10.1.3 TDD HARQ-ACK 反馈过程
 
 <Figure
   src="/img/content/dc7dff33733c8c2405a40f94135f32a05ff11b94.png"
   title="36.213 Table 10.1.3.1-1"
+  width="100%"
+/>
+
+<Figure
+  src="/img/content/5f8eb7b2fc73ceebb3e8ddfeafa629195c011c56.png"  
+  title="36.213 Table 10.1.3A-1"
   width="100%"
 />
