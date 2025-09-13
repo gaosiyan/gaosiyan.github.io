@@ -3,23 +3,22 @@ sidebar_position: 2
 sidebar_label: "环境配置"
 ---
 import Figure, { FigureRef } from "@site/src/components/custom/Figure";
+import Table, { TableRef } from "@site/src/components/custom/Table";
 
 # 环境配置
 
 ## MSYS2 环境配置
+
+MSYS2 是一套基于开源软件的工具和库集合,旨在为 Windows 提供原生构建环境.它集成了 Pacman 包管理器,支持 GCC,Clang 等主流开源构建工具,让用户能够在 Windows 上便捷地开发和构建软件.
+
+MSYS2 在 Windws 上提供了 WIndows API->POSIX API 的转换,实现 Linux POSIX 软件运行,并包含了相关 Linux 工具.
 
 ### 相关参考资料汇总:
 - 官网 https://www.msys2.org/
 - MSYS2 清华大学镜像源配置 https://mirrors.tuna.tsinghua.edu.cn/help/msys2/
 - ArchLinux 维基 pacman 使用说明 https://mirrors.tuna.tsinghua.edu.cn/help/msys2/
 
-### MSYS2 简介
-
-MSYS2 是一套基于开源软件的工具和库集合,旨在为 Windows 提供原生构建环境.它集成了 Pacman 包管理器,支持 GCC,Clang 等主流开源构建工具,让用户能够在 Windows 上便捷地开发和构建软件.
-
-MSYS2 在 Windws 上提供了 WIndows API->POSIX API 的转换,实现 Linux POSIX 软件运行,并包含了相关 Linux 工具.
-
-#### MSYS2 安装和配置
+### MSYS2 安装和配置
 
 这里使用的版本是截至 2025 年 1 月的最新版本`msys2-x86_64-20241208.exe`,安装过程如下:
 
@@ -28,13 +27,15 @@ MSYS2 在 Windws 上提供了 WIndows API->POSIX API 的转换,实现 Linux POSI
 
   <Figure
   src="/img/content/be8df5aee5847906845d153c68d5366d359c5a97.png"  
-  title="MSYS2 安装路径配置"/>
+  title="MSYS2 安装路径配置"
+  width="50%"/>
 
 3. 安装完成后出现如下 <FigureRef id="MSYS2 环境快捷方式" /> 五个快捷方式,分别代表五个 MSYS2 环境:
 
   <Figure
   src="/img/content/b032f8644c0f25d9c679d40c5cf8615a2e6265dc.png"  
-  title="MSYS2 环境快捷方式"/>
+  title="MSYS2 环境快捷方式"
+  width="50%"/>
 
 4. 有的情况下需要添加代理服务器,修改 `D:\bin\msys64\etc\profile` 加入如下的命令(其中 IP 是对应的代理服务器地址):
 ```sh
@@ -46,4 +47,107 @@ export https_proxy=10.88.138.8:80
 
 <Figure
   src="/img/content/2d5ae5b4993fba673e71425e1861aa2132f52276.png"  
-  title="MSYS2 初始安装完成后的磁盘占用" />
+  title="MSYS2 初始安装完成后的磁盘占用"
+  width="40%"/>
+
+在 MYSY2 MSYS 环境中执行如下命令配置清华镜像:
+
+```bash
+sed -i "s#https\?://mirror.msys2.org/#https://mirrors.tuna.tsinghua.edu.cn/msys2/#g" /etc/pacman.d/mirrorlist*
+```
+
+:::info
+  这个命令修改的是 `D:\bin\msys64\etc\pacman.d` 中的下列文件:
+  - mirrorlist.clang64
+  - mirrorlist.mingw32
+  - mirrorlist.msys
+  - mirrorlist.clang32
+  - mirrorlist.mingw
+  - mirrorlist.mingw64
+  - mirrorlist.ucrt64
+:::
+
+MSYS2 带有不同的环境.所以最重要的事情是使用那个环境.环境之间的差异主要是:
+
+- 环境变量;
+- 编译器/连接器;
+- 架构;
+- 使用的系统库.
+
+<Table title="MSYS2 环境">   
+| 环境名称    | 启动程序    | 路径    | 工具链   | 架构    | C 库    | C++ 库    | 包前缀    |
+|-------------|-------------|---------|----------|----------|---------|------------|-----------------------------|
+| MSYS        | msys2.exe   | /usr    | gcc      | x86_64   | cygwin  | libstdc++  | 无                         |
+| UCRT64      | ucrt64.exe  | /ucrt64 | gcc      | x86_64   | ucrt    | libstdc++  | mingw-w64-ucrt-x86_64-     |
+| CLANG64     | clang64.exe | /clang64| llvm     | x86_64   | ucrt    | libc++     | mingw-w64-clang-x86_64-    |
+| CLANGARM64  | clangarm64.exe | /clangarm64 | llvm  | aarch64  | ucrt    | libc++     | mingw-w64-clang-aarch64-   |
+| MINGW64     | mingw64.exe | /mingw64| gcc      | x86_64   | msvcrt  | libstdc++  | mingw-w64-x86_64-          |
+| CLANG32     | clang32.exe | /clang32| llvm     | i686     | ucrt    | libc++     | mingw-w64-clang-i686-      |
+| MINGW32     | mingw32.exe | /mingw32| gcc      | i686     | msvcrt  | libstdc++  | mingw-w64-i686-            |
+</Table>
+
+关于 <TableRef id="MSYS2 环境" /> 的说明:
+
+1. 最后两个是 32 位环境已经不再推荐使用;
+2. MSYS 环境(`/usr`)中包含基于 `unix/cygwin` 的工具,它始终处于活动状态(`$PATH`).所有其他环境从 MSYS 环境继承并在其上添加各种内容;
+3. MSYS2 官方建议最好选择最新的 UCRT64,例如启动 ucrt64.exe,可以使用 UCRT64 和 MSYS2 中的工具,此时搜索路径为 `$PATH/ucrt64/bin:/usr/bin`;
+4. MSVCRT 和 UCRT 是 Microsoft Windows 上 C 标准库的两种变体.
+  - MSVCRT (Microsoft Visual C++ Runtime) 在所有 Microsoft Windows 版本,但由于向后兼容性问题不兼容 C99,并且缺少一些功能;
+  - UCRT(Universal C Runtime,通用 C 运行时)是一个较新的版本,Visual Studio 2015 以及以后的版本默认使用 UCRT 为 C 运行时.
+
+### Pacman 常用操作
+
+Pacman 是一个软件包管理器,作为 ArchLinux 发行版的一部分,是 Arch Linux 的一大亮点.后来被 MSYS2 引入.命令后面加 `--noconfirm` 表示无需确认默认执行:
+
+```bash
+pacman -Qs # 查看已安装软件,初始安装包全部在 local 下
+pacman -S 包名_1 包名_2 ...  # 安装指定的软件包
+pacman -S 仓库名/包名        # 有时软件包有多个版本,放在不同的仓库内,这里指定安装对应仓库的包
+```
+
+有一些软件包含多个软件包,称为一个软件包组,比如用下面的命令安装 `mingw-w64-ucrt-x86_64-toolchain`
+
+```bash
+pacman -S mingw-w64-ucrt-x86_64-toolchain
+```
+
+会安装 19 个软件包.安装完成后,可以用下面的命令查看那些包属于 `mingw-w64-ucrt-x86_64-toolchain` 软件包组
+
+```bash
+pacman -Sg mingw-w64-ucrt-x86_64-toolchain
+```
+
+卸载一定特别注意依赖关系.防止递归卸载.
+```bash
+pacman -Rsc mingw-w64-ucrt-x86_64-toolchain
+```
+上面的命令用于卸载`mingw-w64-ucrt-x86_64-toolchain` 软件包及其相关依赖,并清理这些包的配置文件和缓存.以下是命令参数的具体含义:
+- `-R` :表示卸载(移除)指定的软件包;
+- `-s` :表示同时移除那些不再被其他已安装软件包所需的依赖包;
+- `-c` :表示清理配置文件,移除与该软件包相关的配置文件.
+- `mingw-w64-ucrt-x86_64-toolchain` :这是要卸载的软件包名称,它是一个工具链包,包含了用于在 MSYS2 的 UCRT64 环境下编译 64 位 Windows 应用程序所需的编译器和工具,例如 GCC,GDB,Make 等.
+
+Pacman 缓存位于 `/var/cache/pacman/pkg/` 不会自动移除旧的和未安装的软件包,需要定期手动清理
+
+```bash
+pacman -Sc --noconfirm # 清理未安装的软件包文件,--noconfirm 无需确认
+pacman -Scc--noconfirm # 清理所有的缓存文件
+```
+
+升级包
+```bash
+pacman -Sy --noconfirm  # 从服务器更新软件包数据库
+pacman -Syu --noconfirm # 一个 pacman 命令就可以升级整个系统
+```
+
+用下面的命令安装 GCC 和 cmake
+```bash
+pacman -Syu # 更新系统
+pacman -S mingw-w64-ucrt-x86_64-toolchain # 安装 gcc 工具链,还是只能编译 64 为,32 位的要另安装
+pacman -S mingw-w64-ucrt-x86_64-cmake # 安装 cmake
+pacman -Scc # 清理所有的缓存文件
+```
+
+:::tip
+mingw-w64-ucrt-x86_64-toolchain 安装完成后需要把安装目录`ucrt64\bin` 下的`mingw32-make.exe`复制一个,并修改成`make.exe`,原因是很多脚本调用的是 make 程序,而不是 mingw32-make 程序.
+:::
