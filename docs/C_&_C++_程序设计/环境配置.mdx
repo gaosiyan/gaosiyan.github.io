@@ -1,0 +1,49 @@
+---
+sidebar_position: 2
+sidebar_label: "环境配置"
+---
+import Figure, { FigureRef } from "@site/src/components/custom/Figure";
+
+# 环境配置
+
+## MSYS2 环境配置
+
+### 相关参考资料汇总:
+- 官网 https://www.msys2.org/
+- MSYS2 清华大学镜像源配置 https://mirrors.tuna.tsinghua.edu.cn/help/msys2/
+- ArchLinux 维基 pacman 使用说明 https://mirrors.tuna.tsinghua.edu.cn/help/msys2/
+
+### MSYS2 简介
+
+MSYS2 是一套基于开源软件的工具和库集合,旨在为 Windows 提供原生构建环境.它集成了 Pacman 包管理器,支持 GCC,Clang 等主流开源构建工具,让用户能够在 Windows 上便捷地开发和构建软件.
+
+MSYS2 在 Windws 上提供了 WIndows API->POSIX API 的转换,实现 Linux POSIX 软件运行,并包含了相关 Linux 工具.
+
+#### MSYS2 安装和配置
+
+这里使用的版本是截至 2025 年 1 月的最新版本`msys2-x86_64-20241208.exe`,安装过程如下:
+
+1. 右键以管理员权限运行;
+2. 如下 <FigureRef id="MSYS2 安装路径配置" /> 配置安装路径:
+
+  <Figure
+  src="/img/content/be8df5aee5847906845d153c68d5366d359c5a97.png"  
+  title="MSYS2 安装路径配置"/>
+
+3. 安装完成后出现如下 <FigureRef id="MSYS2 环境快捷方式" /> 五个快捷方式,分别代表五个 MSYS2 环境:
+
+  <Figure
+  src="/img/content/b032f8644c0f25d9c679d40c5cf8615a2e6265dc.png"  
+  title="MSYS2 环境快捷方式"/>
+
+4. 有的情况下需要添加代理服务器,修改 `D:\bin\msys64\etc\profile` 加入如下的命令(其中 IP 是对应的代理服务器地址):
+```sh
+export http_proxy=10.88.138.8:80
+export https_proxy=10.88.138.8:80
+```
+
+5. 初始完成安装后的磁盘占用情况如下 <FigureRef id="MSYS2 初始安装完成后的磁盘占用" /> :
+
+<Figure
+  src="/img/content/2d5ae5b4993fba673e71425e1861aa2132f52276.png"  
+  title="MSYS2 初始安装完成后的磁盘占用" />
