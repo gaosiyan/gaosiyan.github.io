@@ -245,11 +245,11 @@ $$
 &k = 0\\
 
 &while\;i < Q_{ACK} \\
-&\qquad if\;\widetilde{q}_i^{ACK} = y\;//占位重复比特\\
+&\qquad if\;\widetilde{q}_i^{ACK} = y\;//\text{占位重复比特}\\
 &\qquad\qquad {q}_i^{ACK} = (\widetilde{q}_{i-1}^{ACK}+w_{\lfloor k/m \rfloor}^{ACK})\;mod\;2\\
 &\qquad\qquad k = (k+1)\;mod\;4m\\
 &\qquad else\\
-&\qquad\qquad if\;\widetilde{q}_i^{ACK} = x\;//占位重复比特\\
+&\qquad\qquad if\;\widetilde{q}_i^{ACK} = x\;//\text{占位重复比特}\\
 &\qquad\qquad\qquad {q}_i^{ACK} = \widetilde{q}_{i}^{ACK}\\
 &\qquad\qquad else\\
 &\qquad\qquad\qquad {q}_i^{ACK} = (\widetilde{q}_{i}^{ACK}+w_{\lfloor k/m \rfloor}^{ACK})\;mod\;2\\
