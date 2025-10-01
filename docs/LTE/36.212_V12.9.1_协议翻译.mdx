@@ -233,8 +233,34 @@ while c < N_cells_DL:
 ```
 
 若 $o^{ACK} \leq 11$,则通过设置 $o_i^{ACK} = \tilde{o}_i^{ACK}$ 来获得比特序列 $o_0^{ACK}, o_1^{ACK}, ...,o_{o^{ACK}-1}^{ACK}$.
-若 $ 11 < o^{ACK} \leq 21$,则按以下方式获得比特序列  $o_0^{ACK}, o_1^{ACK}, ..., o_{o^{ACK}-1}^{ACK}$,若 $ i $ 为偶数,则设置 $ o_{\lfloor i/2 \rfloor}^{ACK} = \tilde{o}_i^{ACK} $;若 $i $ 为奇数,则设置 $ o_{\lfloor o^{ACK}/2 \rfloor + \lfloor (i-1)/2 \rfloor}^{ACK} = \tilde{o}_i^{ACK} $.
+若 $ 11 < o^{ACK} \leq 21$,则按以下方式获得比特序列  $o_0^{ACK}, o_1^{ACK}, ..., o_{o^{ACK}-1}^{ACK}$,若 $ i $ 为偶数,则设置 $ o_{\lfloor i/2 \rfloor}^{ACK} = \tilde{o}_i^{ACK} $;若 $i$ 为奇数,则设置 $ o_{\lfloor o^{ACK}/2 \rfloor + \lfloor (i-1)/2 \rfloor}^{ACK} = \tilde{o}_i^{ACK} $.
 
-对于 TDD 主小区,且 HARQ-ACK 用于两个下行载波的聚合,同时 UE 配置了采用信道选择的 PUCCH format 1b 的情况,则按照 36.213 第 7.3 节所述方式获得比特序列 $ o_0^{ACK}, o_1^{ACK}, ..., o_{o^{ACK}-1}^{ACK}$.
+对于 TDD 主小区,且 HARQ-ACK 用于两个下行载波的聚合,同时 UE 配置了采用信道选择的 PUCCH format 1b 的情况,则按照 36.213 第 7.3 节所述方式获得比特序列 $o_0^{ACK}, o_1^{ACK}, ..., o_{o^{ACK}-1}^{ACK}$.
 
-For TDD HARQ-ACK bundling, a bit sequence...
+对于 TDD HARQ-ACK bundling,通过级联多个已编码的 HARQ-ACK 块获得一个比特序列 $\widetilde{q}_0^{ACK},\widetilde{q}_1^{ACK},\widetilde{q}_2^{ACK},...,\widetilde{q}_{Q_{ACK}-1}^{ACK}$,其中 $Q_{ACK}$ 是所有已编码 HARQ-ACK 块的总编码比特数. 最后一个已编码 HARQ-ACK 块的级联可能是部分的,以使总比特序列长度等于 $Q_{ACK}$. 随后查表 Table 5.2.2.6-A <FigureRef id="36.212 Table 5.2.2.6-A 用于 TDD HARQ-ACK bundling 的加扰序列选择" /> 根据索引 $i=(N_{bundled}-1)\text{ mod }4$ 选择一个加扰序列 $[w_0^{ACK}\text{ }w_1^{ACK}\text{ }w_2^{ACK}\text{ }w_3^{ACK}]$,其中 $N_{bundled}$ 由 36.213 第 7.3 节的规定确定.接着,通过设置 $m = 1$(如果 HARQ-ACK 由 1 比特组成) 和  $m = 3$(如果 HARQ-ACK 由 2 比特组成),并如下所述对序列 $\widetilde{q}_0^{ACK},\widetilde{q}_1^{ACK},\widetilde{q}_2^{ACK},...,\widetilde{q}_{Q_{ACK}-1}^{ACK}$ 进行加扰,来生成比特序列 ${q}_0^{ACK},{q}_1^{ACK},{q}_2^{ACK},...,{q}_{Q_{ACK}-1}^{ACK}$:
+
+$$
+\begin{aligned}
+&i = 0\\
+&k = 0\\
+
+&while\;i < Q_{ACK} \\
+&\qquad if\;\widetilde{q}_i^{ACK} = y\;//占位重复比特\\
+&\qquad\qquad {q}_i^{ACK} = (\widetilde{q}_{i-1}^{ACK}+w_{\lfloor k/m \rfloor}^{ACK})\;mod\;2\\
+&\qquad\qquad k = (k+1)\;mod\;4m\\
+&\qquad else\\
+&\qquad\qquad if\;\widetilde{q}_i^{ACK} = x\;//占位重复比特\\
+&\qquad\qquad\qquad {q}_i^{ACK} = \widetilde{q}_{i}^{ACK}\\
+&\qquad\qquad else\\
+&\qquad\qquad\qquad {q}_i^{ACK} = (\widetilde{q}_{i}^{ACK}+w_{\lfloor k/m \rfloor}^{ACK})\;mod\;2\\
+&\qquad\qquad\qquad  k = (k+1)\;mod\;4m\\
+&\qquad end\;if\\
+&\qquad i = i+1\\
+&end\; while
+&\end{aligned}
+$$
+​
+<Figure
+  src="/img/content/97320d1a6d7e5add652e1d58dda4418eb0f617bc.png"  
+  title="36.212 Table 5.2.2.6-A 用于 TDD HARQ-ACK bundling 的加扰序列选择"
+/>
