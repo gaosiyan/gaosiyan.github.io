@@ -1,13 +1,13 @@
 ---
-sidebar_position: 2
-sidebar_label: "环境配置"
+sidebar_position: 1
+sidebar_label: "MSYS2"
 ---
 import Figure, { FigureRef } from "@site/src/components/custom/Figure";
 import Table, { TableRef } from "@site/src/components/custom/Table";
 
-# 环境配置
+# MSYS2
 
-## MSYS2 环境配置
+## MSYS2 简介
 
 MSYS2 是一套基于开源软件的工具和库集合,旨在为 Windows 提供原生构建环境.它集成了 Pacman 包管理器,支持 GCC,Clang 等主流开源构建工具,让用户能够在 Windows 上便捷地开发和构建软件.
 
@@ -140,7 +140,8 @@ pacman -Sy --noconfirm  # 从服务器更新软件包数据库
 pacman -Syu --noconfirm # 一个 pacman 命令就可以升级整个系统
 ```
 
-用下面的命令安装 GCC 和 cmake
+## 相关库安装
+
 ```bash
 pacman -Syu # 更新系统
 pacman -S mingw-w64-ucrt-x86_64-toolchain # 安装 gcc 工具链,还是只能编译 64 为,32 位的要另安装
