@@ -1,0 +1,163 @@
+---
+sidebar_position: 2
+sidebar_label: "CMSIS-DSP"
+---
+
+# 参考资料汇总
+
+- 官网 https://www.arm.com/technologies/cmsis
+- 官方文档主页 https://arm-software.github.io/CMSIS_6/main/DSP/index.html
+- GitHub https://github.com/ARM-software/CMSIS-DSP
+- 第三方参考 https://zju-helloworld.github.io/Wiki/%E5%BC%80%E5%8F%91%E6%8C%87%E5%8D%97/%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BA%93/CMSIS-DSP%20%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/
+
+# 构建
+
+截至当前 20251025 CMSIS-DSP 最新的 Release 版本为 1.16.2.
+
+:::tip
+原始 CMSIS-DSP-1.16.2 文件夹包含了很多目录,编译 C 库只依赖 `Include, PrivateInclude, Source` 这三个目录.
+:::
+
+## ANSI C 构建
+
+ANSI C 构建除了 C 标准库之外无任何外部依赖,可用于 PC 以及支持 ANSI C 的任意设配.
+
+### CMake 构建
+
+CMake 中定义 `HOST` 宏. 官方提供的 CMake 编译脚本中,是通过 `HOST` 宏来间接定义 `__GNUC_PYTHON__` 宏(具体含义见相关宏定义).
+
+:::tip
+代码中并不识别 `HOST` 宏,只能识别`__GNUC_PYTHON__` 宏,即 CMake 脚本中通过 `HOST` 来定义 `__GNUC_PYTHON__` 宏.
+:::
+
+1. 编译静态连接库,具体命令如下:
+
+```bash
+cd CMSIS-DSP-1.16.2 # 切换到 CMSIS-DSP 目录
+mkdir build         # 创建 build 目录
+cd build            # 进入 build 目录
+cmake -G "MinGW Makefiles" -DHOST=ON ../Source/ # 在当前 build 目录生成 makefile 文件, 使用 CMSIS-DSP-1.16.2\Source\ 目录下的 CMakeLists.txt
+make # 将在 build 目录生成 .a 文件,注意引用该库的头文件时要定义 __GNUC_PYTHON__
+```
+2. 在引用 CMSIS-DSP 静态链接库的 App 工程中定义 `__GNUC_PYTHON__`;
+3. 在引用 CMSIS-DSP 静态链接库的 App 工程中将 `CMSIS-DSP-1.16.2\Include` 目录添加到搜索路径下;
+4. 在引用 CMSIS-DSP 静态链接库的 App 工程中加入`#include "arm_math.h"` 后就可以调用 CMSIS-DSP 库中所有函数了.
+
+### IDE 构建
+
+1. 在 CMSIS-DSP 库工程中添加定制头文件 `arm_dsp_config.h`,文件中定义定制的相关宏,例如 `__GNUC_PYTHON__` 还可以添加其它自定义宏,相关定制宏见后面的描述;
+2. 在 CMSIS-DSP 库工程中定义 `ARM_DSP_CUSTOM_CONFIG` 宏;
+:::tip
+CMSIS-DSP-1.16.2 原始代码中名没有提供 `arm_dsp_config.h` 文件,该文件名是代码中的约定,即如果定义了 `ARM_DSP_CUSTOM_CONFIG` 宏后,才会在搜索路径下查找并包含 `arm_dsp_config.h` 文件.
+:::
+3. 在 CMSIS-DSP 库工程中将 `CMSIS-DSP-1.16.2\Include` 和 `CMSIS-DSP-1.16.2\PrivateInclude` 以及 `arm_dsp_config.h` 所在的目录加入搜索路径;
+4. 以上库工程修改完毕,也可以写对应的 CMake 脚本实现;
+5. 在引用 CMSIS-DSP 静态链接库的 App 工程中同样定义 `ARM_DSP_CUSTOM_CONFIG` 宏;
+6. 在引用 CMSIS-DSP 静态链接库的 App 工程中将 `CMSIS-DSP-1.16.2\Include` 和 `arm_dsp_config.h` 文件所在的目录加入搜索路径;
+7. 在引用 CMSIS-DSP 静态链接库的 App 工程中添加 `#include "arm_math.h` 后就可以调用 CMSIS-DSP 库中所有函数了.
+
+:::tip
+推荐该方法,即定义 `ARM_DSP_CUSTOM_CONFIG` 宏. 这样可以尽量少的修改工程属性,因为 `arm_dsp_config.h` 中还可以加入其它定制宏.
+:::
+
+一个参考的 `arm_dsp_config.h` 文件内容如下:
+
+```c
+/******************************************************************************
+ * @file     arm_dsp_config.h
+ * @brief 自定义 CMSIS-DSP 库配置文件
+ * @version  V1.10.0
+ * @author gaosiyan
+ * @date     2025/10/25
+ * @note 如果工程中定义了 ARM_DSP_CUSTOM_CONFIG 宏,则启用该头文件,所有自定义宏都在该文件中适配
+ ******************************************************************************/
+
+#ifndef _ARM_DSP_CONFIG_H_
+#define _ARM_DSP_CONFIG_H_
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+#ifndef __GNUC_PYTHON__
+#define __GNUC_PYTHON__     // x86 平台模拟 CMSIS-DSP 层 API
+#endif
+
+#ifndef ARM_MATH_ROUNDING
+#define ARM_MATH_ROUNDING   // 四舍五入
+#endif
+
+#ifndef ARM_MATH_LOOPUNROLL
+#define ARM_MATH_LOOPUNROLL // 循环展开
+#endif
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* _ARM_DSP_CONFIG_H_ */
+
+/**
+ *
+ * End of file.
+ */
+
+```
+
+另外在 IDE 中也可以定义 `__GNUC_PYTHON__` 来实现,即不用定义 `ARM_DSP_CUSTOM_CONFIG` 宏和 `arm_dsp_config.h` 文件:
+1. 在 CMSIS-DSP 库工程中定义 `__GNUC_PYTHON__` 宏并添加搜索路径,进行静态链接库编译;
+2. 在 CMSIS-DSP 库工程中将 `CMSIS-DSP-1.16.2\Include` 和 `CMSIS-DSP-1.16.2\PrivateInclude` 加入搜索路径;
+3. 在引用 CMSIS-DSP 静态链接库的 App 工程中定义 `__GNUC_PYTHON__` 宏;
+4. 在引用 CMSIS-DSP 静态链接库的 App 工程中将 `CMSIS-DSP-1.16.2\Include` 加入搜索路径;
+5. 在引用 CMSIS-DSP 静态链接库的 App 工程中加入`#include "arm_math.h"` 后就可以调用 CMSIS-DSP 库中所有函数了.
+
+# 相关宏定义
+
+`__GNUC_PYTHON__` 宏
+
+该宏主要是为了 Python 包装器引入的,其另一个重要作用是实现对 CMSIS-Core 层的 API 模拟.定义该宏后,CMSIS-DSP 库中的代码都是完备的 ANSI C 代码,即除了 C 标准库之外无任何外部依赖.因此,该宏有两个主要作用:
+
+1. 通用性:定义该宏可以将 CMSIS-DSP 编译成完备的 ANSI C 通用库,适用于任何处理器,而不仅限于 Cortex-M 处理器;
+2. Python 包装器:用 `pip install cmsisdsp` 安装的 cmsisdsp 库就是基于该宏编译的.该过程分为两步:
+    1. 定义 `__GNUC_PYTHON__` 编译 CMSIS-DSP 库,确保代码是 ANSI C 兼容的;
+    2. 通过 Python 包装器将 NumPy 数组转换为 C 数组,并调用 CMSIS-DSP 的 C 函数,生成 cmsisdsp 库.
+
+:::tip
+如果定义了 `__GNUC_PYTHON__` 宏那么编译的 CMSIS-DSP 库本身就是 ANSI C 完备的:
+- 定义了 `__GNUC_PYTHON__` 宏,就会包含 `dsp/none.h` 文件,其中会定义 CMSIS-Core 层相关 API 的 ANSI C 模拟;
+- NumPy 的向量化操作是在生成 Python 库时进行的,编译 CMSIS-DSP 库时并不可见.可以理解成一种优化(类似于 O3 优化),即本质上 cmsisdsp 并非一定要依赖 NumPy.
+:::
+
+可以在 Windows/Linux/macOS 定义 `__GNUC_PYTHON__` 宏编译 CMSIS-DSP 库并直接使用.
+
+`ARM_MATH_BIG_ENDIAN` 宏
+该宏用于定义目标 CPU 的大小端,没有定义(默认)代表小端,PC 上一般是小端,ARM-Cortex M 系列 MCU 默认也是小端,所以一般不用定义该宏,但是需要移植到大端处理器上就需要定义该宏.
+
+`ARM_MATH_MATRIX_CHECK` 宏
+该宏用于确定是否对操作的矩阵维度进行检查,不同的矩阵操作对输入矩阵的维度有不同的要求,如果定义了该宏,维度非法时,直接返回`ARM_MATH_SIZE_MISMATCH` 错误.默认不定义该宏.
+
+`ARM_MATH_ROUNDING` 宏
+该宏用于定浮点转换过程中是四舍五入,还是向下取整,如果定了该宏表示四舍五入,否则表示向下取整.默认没有定义,具体行为见后面的介绍.
+
+`ARM_MATH_LOOPUNROLL` 宏
+该宏用于是否进行循环展开,如果没有定义该宏,即针对向量类型的处理在 for 循环中每次只处理一个元素.如果定义了该宏,用 while 循环实现,循环体中每次操作 4 个元素,方便编译器优化.默认不定义该宏.
+
+`ARM_DSP_CUSTOM_CONFIG` 宏
+如前所述,主要是为了是否包含约定的配置头文件 `arm_dsp_config.h`,如果定义了该宏就会在搜索路径下查找并包含 `arm_dsp_config.h` 文件.
+
+其它宏
+这里没有介绍的宏还有:
+- `ARM_MATH_NEON`
+- `ARM_MATH_NEON_EXPERIMENTAL`
+- `ARM_MATH_HELIUM`
+- `ARM_MATH_HELIUM_EXPERIMENTAL`
+- `ARM_MATH_MVEF`
+- `ARM_MATH_MVEI`
+- `ARM_MATH_MVE_FLOAT16`
+- `DISABLEFLOAT16`
+- `ARM_MATH_AUTOVECTORIZE`
+- `ARM_DSP_ATTRIBUTE`
+- `ARM_DSP_TABLE_ATTRIBUTE`
+
+这些宏都是启用专用 MCU 上的加速或者特殊操作,默认都不定义,例如 `ARM_MATH_NEON` 宏主要是为了支持 Neon 指令集的目标处理器上实现 SIMD 优化,Neon 指令集是 ARM Cortex-A 系列设备上的 SIMD(单指令多数据)指令集 Cortex-M 系列设备并不支持 Neon,如果在库中定义了 `ARM_MATH_NEON` 用于 Cortex-M 处理器,可能会链接失败.
