@@ -5,6 +5,8 @@ sidebar_label: "入门"
 
 import Figure, { FigureRef } from "@site/src/components/custom/Figure";
 
+# 入门
+
 # Docusaurus 简介
 
 Docusaurus 是由 Meta(原 Facebook)开源的现代化静态网站生成框架,基于 React 构建,专为技术文档,博客和内容型网站设计.
@@ -48,4 +50,131 @@ Docusaurus 于 2017 年首次发布,当前(2025/08/09)的最新的版本是 Docu
    npx create-docusaurus@latest my-website classic --typescript
    ```
 
-   :::
+   :::
+
+# Markdown 基本功能
+
+# Markdown 附加功能 {#heading-id}
+
+## Front Matter 元数据
+
+Front Matter 元数据是 Markdown 文档顶部的 YAML 格式数据,例如:
+
+```yaml
+---
+id: my-doc-id
+title: My document title
+description: My document description
+slug: /my-custom-url
+---
+```
+
+位于 Markdown 文档顶部,并且用`---`包裹,其中元素都是变量,以当前文档为例:
+
+```yaml
+sidebar_position: 1
+sidebar_label: "入门"
+```
+
+其中:
+
+- `sidebar_position` 表示文档位置;
+- `sidebar_label` 表示显示的标题,不一定和文档名相同.
+
+另外每个目录下有 `_category_.json` 文件,以当前目录为例:
+
+```json
+{
+  "position": 1,
+  "label": "docusaurus"
+}
+```
+
+其中:
+
+- `position` 表示当前目录的位置;
+- `label` 表示当前目录的名称.
+
+## 警告和标注
+
+```
+:::tip
+提示信息
+:::
+```
+
+渲染效果如下:
+
+:::tip
+
+提示信息
+
+:::
+
+另外标题也可以重命名,例如:
+
+```
+:::tip[我的提示]
+提示信息
+:::
+```
+
+:::tip[我的提示]
+提示信息
+:::
+
+几种场景的告警和标注:
+
+```
+:::danger
+这个动作很危险
+:::
+```
+
+渲染效果如下:
+
+:::danger
+
+这个动作很危险
+
+:::
+
+```
+:::note
+备注信息
+:::
+```
+
+渲染效果如下:
+
+:::note
+备注信息
+:::
+
+```
+:::info
+普通信息
+:::
+```
+
+渲染效果如下:
+
+:::info
+
+普通信息
+
+:::
+
+```
+:::warning
+警告信息
+:::
+```
+
+渲染效果如下:
+
+:::warning
+警告信息
+:::
+
+[link](#heading-id)
