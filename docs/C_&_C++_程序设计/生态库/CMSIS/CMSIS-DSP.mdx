@@ -3,6 +3,8 @@ sidebar_position: 2
 sidebar_label: "CMSIS-DSP"
 ---
 
+# CMSIS-DSP
+
 # 参考资料汇总
 
 - 官网 https://www.arm.com/technologies/cmsis
@@ -15,12 +17,12 @@ sidebar_label: "CMSIS-DSP"
 截至当前 20251025 CMSIS-DSP 最新的 Release 版本为 1.16.2.
 
 :::tip
-原始 CMSIS-DSP-1.16.2 文件夹包含了很多目录,编译 C 库只依赖 `Include, PrivateInclude, Source` 这三个目录.
+原始 CMSIS-DSP-1.16.2 文件夹包含了很多目录,构建 C 库只依赖 `Include, PrivateInclude, Source` 这三个目录.
 :::
 
 ## ANSI C 构建
 
-ANSI C 构建除了 C 标准库之外无任何外部依赖,可用于 PC 以及支持 ANSI C 的任意设配.
+ANSI C 构建除了 C 标准库之外无任何外部依赖,可用于 PC 以及任意支持 ANSI C 的设配.
 
 ### CMake 构建
 
@@ -45,7 +47,7 @@ make # 将在 build 目录生成 .a 文件,注意引用该库的头文件时要�
 
 ### IDE 构建
 
-1. 在 CMSIS-DSP 库工程中添加定制头文件 `arm_dsp_config.h`,文件中定义定制的相关宏,例如 `__GNUC_PYTHON__` 还可以添加其它自定义宏,相关定制宏见后面的描述;
+1. 提供 `arm_dsp_config.h` 头文件,该文件中定义定制的相关宏,例如 `__GNUC_PYTHON__` 还可以添加其它自定义宏(具体含义见相关宏定义);
 2. 在 CMSIS-DSP 库工程中定义 `ARM_DSP_CUSTOM_CONFIG` 宏;
 :::tip
 CMSIS-DSP-1.16.2 原始代码中名没有提供 `arm_dsp_config.h` 文件,该文件名是代码中的约定,即如果定义了 `ARM_DSP_CUSTOM_CONFIG` 宏后,才会在搜索路径下查找并包含 `arm_dsp_config.h` 文件.
@@ -64,11 +66,11 @@ CMSIS-DSP-1.16.2 原始代码中名没有提供 `arm_dsp_config.h` 文件,该文
 
 ```c
 /******************************************************************************
- * @file     arm_dsp_config.h
+ * @file    arm_dsp_config.h
  * @brief 自定义 CMSIS-DSP 库配置文件
- * @version  V1.10.0
- * @author gaosiyan
- * @date     2025/10/25
+ * @version V1.0.0
+ * @author  gaosiyan
+ * @date    2025/10/25
  * @note 如果工程中定义了 ARM_DSP_CUSTOM_CONFIG 宏,则启用该头文件,所有自定义宏都在该文件中适配
  ******************************************************************************/
 
@@ -102,11 +104,10 @@ extern "C"
  *
  * End of file.
  */
-
 ```
 
-另外在 IDE 中也可以定义 `__GNUC_PYTHON__` 来实现,即不用定义 `ARM_DSP_CUSTOM_CONFIG` 宏和 `arm_dsp_config.h` 文件:
-1. 在 CMSIS-DSP 库工程中定义 `__GNUC_PYTHON__` 宏并添加搜索路径,进行静态链接库编译;
+另外也可在定义 `__GNUC_PYTHON__` 来实现,即不用定义 `ARM_DSP_CUSTOM_CONFIG` 宏和 `arm_dsp_config.h` 文件:
+1. 在 CMSIS-DSP 库工程中定义 `__GNUC_PYTHON__` 宏;
 2. 在 CMSIS-DSP 库工程中将 `CMSIS-DSP-1.16.2\Include` 和 `CMSIS-DSP-1.16.2\PrivateInclude` 加入搜索路径;
 3. 在引用 CMSIS-DSP 静态链接库的 App 工程中定义 `__GNUC_PYTHON__` 宏;
 4. 在引用 CMSIS-DSP 静态链接库的 App 工程中将 `CMSIS-DSP-1.16.2\Include` 加入搜索路径;
@@ -114,9 +115,7 @@ extern "C"
 
 # 相关宏定义
 
-`__GNUC_PYTHON__` 宏
-
-该宏主要是为了 Python 包装器引入的,其另一个重要作用是实现对 CMSIS-Core 层的 API 模拟.定义该宏后,CMSIS-DSP 库中的代码都是完备的 ANSI C 代码,即除了 C 标准库之外无任何外部依赖.因此,该宏有两个主要作用:
+`__GNUC_PYTHON__` 宏主要是为了 Python 包装器引入的,其另一个重要作用是实现对 CMSIS-Core 层的 API 模拟.定义该宏后,CMSIS-DSP 库中的代码都是完备的 ANSI C 代码,即除了 C 标准库之外无任何外部依赖.因此,该宏有两个主要作用:
 
 1. 通用性:定义该宏可以将 CMSIS-DSP 编译成完备的 ANSI C 通用库,适用于任何处理器,而不仅限于 Cortex-M 处理器;
 2. Python 包装器:用 `pip install cmsisdsp` 安装的 cmsisdsp 库就是基于该宏编译的.该过程分为两步:
@@ -124,27 +123,19 @@ extern "C"
     2. 通过 Python 包装器将 NumPy 数组转换为 C 数组,并调用 CMSIS-DSP 的 C 函数,生成 cmsisdsp 库.
 
 :::tip
-如果定义了 `__GNUC_PYTHON__` 宏那么编译的 CMSIS-DSP 库本身就是 ANSI C 完备的:
 - 定义了 `__GNUC_PYTHON__` 宏,就会包含 `dsp/none.h` 文件,其中会定义 CMSIS-Core 层相关 API 的 ANSI C 模拟;
 - NumPy 的向量化操作是在生成 Python 库时进行的,编译 CMSIS-DSP 库时并不可见.可以理解成一种优化(类似于 O3 优化),即本质上 cmsisdsp 并非一定要依赖 NumPy.
 :::
 
-可以在 Windows/Linux/macOS 定义 `__GNUC_PYTHON__` 宏编译 CMSIS-DSP 库并直接使用.
+`ARM_MATH_BIG_ENDIAN` 宏用于定义目标 CPU 的大小端,没有定义(默认)代表小端,PC 上一般是小端,ARM-Cortex M 系列 MCU 默认也是小端,所以一般不用定义该宏,但是需要移植到大端处理器上就需要定义该宏.
 
-`ARM_MATH_BIG_ENDIAN` 宏
-该宏用于定义目标 CPU 的大小端,没有定义(默认)代表小端,PC 上一般是小端,ARM-Cortex M 系列 MCU 默认也是小端,所以一般不用定义该宏,但是需要移植到大端处理器上就需要定义该宏.
+`ARM_MATH_MATRIX_CHECK` 宏用于确定是否对操作的矩阵维度进行检查,不同的矩阵操作对输入矩阵的维度有不同的要求,如果定义了该宏,维度非法时,直接返回`ARM_MATH_SIZE_MISMATCH` 错误.默认不定义该宏.
 
-`ARM_MATH_MATRIX_CHECK` 宏
-该宏用于确定是否对操作的矩阵维度进行检查,不同的矩阵操作对输入矩阵的维度有不同的要求,如果定义了该宏,维度非法时,直接返回`ARM_MATH_SIZE_MISMATCH` 错误.默认不定义该宏.
+`ARM_MATH_ROUNDING` 宏用于定浮点转换过程中是四舍五入,还是向下取整,如果定了该宏表示四舍五入,否则表示向下取整.默认没有定义,具体行为见后面的介绍.
 
-`ARM_MATH_ROUNDING` 宏
-该宏用于定浮点转换过程中是四舍五入,还是向下取整,如果定了该宏表示四舍五入,否则表示向下取整.默认没有定义,具体行为见后面的介绍.
+`ARM_MATH_LOOPUNROLL` 宏用于是否进行循环展开,如果没有定义该宏,即针对向量类型的处理在 for 循环中每次只处理一个元素.如果定义了该宏,用 while 循环实现,循环体中每次操作 4 个元素,方便编译器优化.默认不定义该宏.
 
-`ARM_MATH_LOOPUNROLL` 宏
-该宏用于是否进行循环展开,如果没有定义该宏,即针对向量类型的处理在 for 循环中每次只处理一个元素.如果定义了该宏,用 while 循环实现,循环体中每次操作 4 个元素,方便编译器优化.默认不定义该宏.
-
-`ARM_DSP_CUSTOM_CONFIG` 宏
-如前所述,主要是为了是否包含约定的配置头文件 `arm_dsp_config.h`,如果定义了该宏就会在搜索路径下查找并包含 `arm_dsp_config.h` 文件.
+`ARM_DSP_CUSTOM_CONFIG` 宏如前所述,主要是为了是否包含约定的配置头文件 `arm_dsp_config.h`,如果定义了该宏就会在搜索路径下查找并包含 `arm_dsp_config.h` 文件.
 
 其它宏
 这里没有介绍的宏还有:
